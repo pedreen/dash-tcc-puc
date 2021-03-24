@@ -13,6 +13,8 @@ library(plotly)
 library(janitor)
 library(dplyr)
 library(corrplot)
+library(xts)
+library(zoo)
 
 #### Coletando dados do Yahoo Finance
 
@@ -84,10 +86,10 @@ inflacao_dolar <- tk_tbl(inflacao_dolar, preserve_index = T, rename_index = 'dat
 colnames(inflacao_dolar) <- c('date', 'inflation_yoy_usa')
 
 
-# pegando o PIB per capta do brazil
-pib_br <-  Quandl('BCB/14640',  type ='xts', order = 'asc')
-pib_br <- tk_tbl(pib_br, preserve_index = T, rename_index = 'date')
-##### Juntando séries em um único Data Frame
+# # pegando o PIB per capta do brazil
+# pib_br <-  Quandl('BCB/14640',  type ='xts', order = 'asc')
+# pib_br <- tk_tbl(pib_br, preserve_index = T, rename_index = 'date')
+# ##### Juntando séries em um único Data Frame
 
 data_orig <- inner_join(ibov_series, cambio_yahoo, by = 'date') %>% 
     inner_join(VIXCLS, by = 'date') %>% 
@@ -95,7 +97,7 @@ data_orig <- inner_join(ibov_series, cambio_yahoo, by = 'date') %>%
     inner_join(bitcoin_usd, by = 'date') %>% 
     inner_join(selic_bcb, by = 'date') %>% 
     inner_join(risco_pais, by = 'date') %>% 
-    inner_join(inflacao_dolar, by = 'date') %>% 
+    #inner_join(inflacao_dolar, by = 'date') %>% 
     select(date, BVSP.Adjusted, `BRL=X.Adjusted`, VIXCLS, `USD (AM)`, value, risco, Last) %>% 
     clean_names()
 
@@ -103,23 +105,26 @@ colnames(data_orig) <- c('date', 'ibov', 'cambio', 'vix', 'gold_usd', 'selic', '
 
 saveRDS(data_orig, 'www/data_orig')
 
-data_orig <- readRDS('www/data_orig') %>% drop_na()
+data_orig <- readRDS('www/data_orig') #%>% drop_na()
 
+### Normalizando dados 
 
-data_orig <- data_orig %>% 
-    mutate(fear_rate = case_when(
-        risco <= 250 ~ 'Baixo Risco',
-        risco > 250 &  risco <= 400 ~ 'Alto Risco',
-        risco > 400 ~ 'Altíssimo Risco'
-    ))
+data_normal <- data.frame(date = seq(ymd("2014-04-15"), ymd("2021-03-22"), by = "days"))
 
+data_orig_normalizada <- left_join(data_normal, data_orig, by = 'date') %>% 
+    mutate(dummy_date = ifelse(is.na(ibov), 1 , 0))
+
+data_orig_normalizada <- data_orig_normalizada %>% fill(c('ibov', 'cambio', 'vix', 'gold_usd', 'selic', 'risco', 'bitcoin_usd'),.direction = 'down')
+
+saveRDS(data_orig_normalizada, 'www/data_normalized')
 
 ##### Visualizando os dados
 
 # plot_ly(data_orig, x = ~date, y = ~ibov, type = 'scatter', mode = 'line', name = 'Ibovespa') %>% 
 #     add_trace(y = ~cambio, name = 'Câmbio')
 
-correlacao <- cor(data_orig[,-1])
+correlacao <- data_orig %>% select(-date)
+correlacao <- cor(correlacao)
 
 corrplot(correlacao, type = "upper", order = "hclust", 
          tl.col = "black", tl.srt = 45)
@@ -129,12 +134,9 @@ ggcorrplot(correlacao, method = 'circle',
 
 
 
+set.seed(100)
 
-
-
-sset.seed(100)
-
-linhas <- sample(1:length(data_orig$bitcoin_usd), length(data_orig$bitcoin_usd)*0.7)
+linhas <- sample(1:length(data_orig$ibov), length(data_orig$ibov)*0.7)
 
 # Dados de treino 70%
 train <- data_orig[linhas,]
@@ -149,7 +151,7 @@ modelo <- rpart(cambio ~ .,data = train, control = rpart.control(cp=0))
 test$predict <- predict(modelo, test)
 
 
-modelo1 <- lm(data_orig$bitcoin_usd~data_orig$cambio,data_orig) # ajuste do modelo de regress?o no R
+modelo1 <- lm(data_orig$bitcoin_usd~data_orig$cambio,data_orig) # ajuste do modelo de regressão no R
 
 summary(modelo1)
 plot(modelo1)
