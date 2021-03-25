@@ -15,6 +15,7 @@ library(dplyr)
 library(corrplot)
 library(xts)
 library(zoo)
+library(lubridate)
 
 #### Coletando dados do Yahoo Finance
 
@@ -105,16 +106,25 @@ colnames(data_orig) <- c('date', 'ibov', 'cambio', 'vix', 'gold_usd', 'selic', '
 
 saveRDS(data_orig, 'www/data_orig')
 
-data_orig <- readRDS('www/data_orig') #%>% drop_na()
+data_orig <- readRDS('www/data_orig') 
 
 ### Normalizando dados 
 
 data_normal <- data.frame(date = seq(ymd("2014-04-15"), ymd("2021-03-22"), by = "days"))
 
+
 data_orig_normalizada <- left_join(data_normal, data_orig, by = 'date') %>% 
     mutate(dummy_date = ifelse(is.na(ibov), 1 , 0))
 
 data_orig_normalizada <- data_orig_normalizada %>% fill(c('ibov', 'cambio', 'vix', 'gold_usd', 'selic', 'risco', 'bitcoin_usd'),.direction = 'down')
+
+tamanho_ibov <- data_orig_normalizada$ibov %>% length()
+
+ibov_1 <- data_orig_normalizada$ibov[1:(tamanho_ibov -1)]
+ibov_2 <- data_orig_normalizada$ibov[1:(tamanho_ibov -2)]
+ibov_3 <- data_orig_normalizada$ibov[1:(tamanho_ibov -3)]
+ibov_4 <- data_orig_normalizada$ibov[1:(tamanho_ibov -4)]
+ibov_5 <- data_orig_normalizada$ibov[1:(tamanho_ibov -5)]
 
 saveRDS(data_orig_normalizada, 'www/data_normalized')
 
@@ -123,7 +133,7 @@ saveRDS(data_orig_normalizada, 'www/data_normalized')
 # plot_ly(data_orig, x = ~date, y = ~ibov, type = 'scatter', mode = 'line', name = 'Ibovespa') %>% 
 #     add_trace(y = ~cambio, name = 'Câmbio')
 
-correlacao <- data_orig %>% select(-date)
+correlacao <- data_orig_normalizada %>% select(-date, -dummy_date)
 correlacao <- cor(correlacao)
 
 corrplot(correlacao, type = "upper", order = "hclust", 
@@ -136,22 +146,22 @@ ggcorrplot(correlacao, method = 'circle',
 
 set.seed(100)
 
-linhas <- sample(1:length(data_orig$ibov), length(data_orig$ibov)*0.7)
+linhas <- sample(1:length(data_orig_normalizada$ibov), length(data_orig_normalizada$ibov)*0.7)
 
 # Dados de treino 70%
-train <- data_orig[linhas,]
+train <- data_orig_normalizada[linhas,]
 
 # Dados de teste 30%
-test <- data_orig[-linhas,]
+test <- data_orig_normalizada[-linhas,]
 
 library(rpart)
-modelo <- rpart(cambio ~ .,data = train, control = rpart.control(cp=0))
+modelo <- rpart(ibov ~ .,data = train, control = rpart.control(cp=0))
 
 # Realizando previsões
-test$predict <- predict(modelo, test)
+test$predict <- stats::predict(modelo, test)
 
 
-modelo1 <- lm(data_orig$bitcoin_usd~data_orig$cambio,data_orig) # ajuste do modelo de regressão no R
+modelo1 <- lm(data_orig_normalizada$ibov~data_orig_normalizada$cambio,data_orig_normalizada) # ajuste do modelo de regressão no R
 
 summary(modelo1)
 plot(modelo1)
