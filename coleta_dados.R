@@ -160,8 +160,7 @@ modelo <- rpart(ibov ~ .,data = train, control = rpart.control(cp=0))
 # Realizando previsões
 test$predict <- stats::predict(modelo, test)
 
-
-modelo1 <- lm(data_orig_normalizada$ibov~data_orig_normalizada$cambio,data_orig_normalizada) # ajuste do modelo de regressão no R
-
-summary(modelo1)
-plot(modelo1)
+# Analisando resultados
+test$ibov_predict <- abs(round(test$predict/test$ibov, 4) -1)
+erros_predict <- summary(test$ibov_predict)
+erros_predict
