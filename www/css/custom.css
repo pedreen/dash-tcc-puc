@@ -1,0 +1,51 @@
+/*
+    Script para configurar CSS da aplicação: Class e id's criados
+*/
+
+.pg-loading-logo {
+    width: 40%;
+}
+
+/* ---- COLUMNS ---- */ 
+
+.box_elasticidades .col-sm-6{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.box_elasticidades .col-sm-4{
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+
+/* ---- TEXTS ---- */
+
+.custom-title{
+    font-weight: bold; 
+    color: #00408a;
+    margin-top: 0px;
+}
+
+#sub_title {
+    color: #3777bc; 
+    font-weight: bold;
+}
+
+
+/* ---- BOTÕES ---- */
+
+#btn-color .btn-default {
+    background-color: #3777bc;
+    color: white;
+    border-color: #3777bc;
+    font-weight: bold;
+}
+
+
+/* Botão 2: borda azul, letra azul, negrito */ 
+
+#btn-color2 .btn-default { 
+    color: #3777bc;
+    border-color: #3777bc;
+    font-weight: bold;
+}

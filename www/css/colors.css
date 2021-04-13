@@ -1,0 +1,63 @@
+
+/* 
+    Script para configurar CSS da aplicação: Sidebar, Header e Navbar
+*/
+
+/* SIDEBAR */
+
+.left-side, .main-sidebar { 
+    /* Fixa o sidebar ao dar scroll */
+    position: fixed; 
+}
+
+/* HEADER */
+
+.skin-blue .main-header .logo{
+    /* Fixa logo do header e muda a cor do background */
+    background: #fff;
+    position: fixed;
+}
+
+.skin-blue .main-header .logo:hover {
+    /* Muda a cor do background da logo: hover */
+    background-color: #fff;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle {
+    /* Hamburger menu color */
+    color: #004EA8;
+}
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    /* Hamburger menu color: hover */
+    color: #004EA8;
+    background-color: #fff;
+}
+
+/* NAVBAR */
+
+.skin-blue .main-header .navbar{
+    background: #fff;
+}
+
+.skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
+    border-left-color: #1e282c;
+}
+
+/* PROGRESS BAR */
+
+.progress-bar {
+
+    background-color: #EE7623;
+
+}
+
+
+/*
+Cores: 
+
+- Azul: #004EA8 (4i)
+- Azul escuro: #00408a | #074a9a
+- Azul claro: #4fadfa
+- Cinza texto: #6b757d
+*/
+

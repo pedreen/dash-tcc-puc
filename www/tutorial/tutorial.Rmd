@@ -1,0 +1,72 @@
+---
+title: "Tutorial Dashboard - Indicadores Econômicos"
+output: html_document
+---
+
+```{r, include = FALSE}
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{css, echo = FALSE}
+
+h1.title {
+    font-size: 30px; 
+    font-weight: bold;
+}
+
+.title1{
+  color: white;
+  font-size: 18px;
+  background-color: #004EA8; 
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: 600;
+}
+
+#subtitle{
+  font-size: 20px;
+  font-weight: 600;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#subsubtitle{
+  font-size: 18px;
+   padding-bottom: 5px;
+}
+
+```
+
+## <span class = "title1">Indicados Econômicos</span>
+
+```{r, echo = FALSE}
+shiny::div(shiny::HTML(paste(shiny::icon("chevron-right"), "Análises Descritivas")), id = "subtitle")
+```
+
+Módulo apresenta dados dos indicadores na forma de tabelas, gráficos e possibilita a comparação de indicadores.
+
+Indicadores:
+
+* Ibovespa
+* Taxa de Câmbio
+* VIX
+* Taxa Selic
+* Risco País
+* Ouro
+* Bitcoin
+
+
+
+
+## <span class = "title1">Explorando Modelos</span>
+
+Nesta aba conseguimos explorar as projeções realizadas através de duas estratégias, que são:
+
+* ARIMA
+* Árvore de Decisão
+
+
+
+```{r, out.width = "600px", echo = FALSE}
+# knitr::include_graphics("img/sim2.png")
+```

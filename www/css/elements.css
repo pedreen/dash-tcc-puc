@@ -1,0 +1,146 @@
+
+/* 
+    Script para configurar CSS da aplicação: 
+    Box, TabBox, Value box, Botão de informação (bsButton), Slider, Table
+*/
+
+/* --- LETTER */
+
+.style-title{
+    font-weight: bold; 
+    color: #00408a;
+}
+
+.margin-title{
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+
+/* ---- VALUE BOX ---- */
+
+.small-box.bg-red {
+    background-color: #004EA8 !important;
+}
+
+/* ---- BOX ---- */
+
+.bg-teal {
+    background-color: #0d24418c!important;
+}
+
+.box-header {
+    padding: 4px !important;
+}
+
+.box-header .box-title, .panel-title{
+    font-weight: bold; 
+}
+
+.box.box-solid {
+    border: 1px solid #fff;
+}
+
+/* status warning - análises */
+
+.box.box-solid.box-warning>.box-header {
+    color: #00408a; 
+    background: #fff;
+    background-color: #fff;
+}
+
+.box.box-solid.box-warning {
+    border: 0px solid #fff;
+}
+
+/* status primary - model explorer */
+
+.box.box-solid.box-primary>.box-header {
+    color: #fff; !important
+    background: #00408a;
+    background-color: #00408a;
+}
+
+.box.box-solid.box-primary {
+    border: 1px solid #00408a;
+}
+
+.box.box-primary {
+    border-top-color: #00418a;
+}
+
+/* ---- Tab Box ---- */
+
+.tab-inside-box .nav-tabs-custom {
+    margin-bottom: 0px;
+    box-shadow: 0 0px 0px rgba(0,0,0,0)
+}
+
+.nav-tabs-custom>.nav-tabs>li.active {
+    border-top-color: #00408a;
+}
+
+/* ---- TabPanel ---- */
+
+.nav-tabs-custom>.nav-tabs>li>a {
+    color: #444;
+    border-radius: 0;
+    font-weight: bold;
+}
+
+/* ---- Botão de informações ---- */
+
+.btn-group-xs>.btn, .btn-xs {
+    float: right; 
+    width: 22px; 
+    height: 22px; 
+    border-radius: 100%; 
+}
+
+.box.box-solid>.box-header .btn:hover, .box.box-solid>.box-header a:hover {
+    background: #367fa9;
+}
+
+.popover{
+    max-width: 700px; 
+}
+
+/* ---- SLIDER ---- */
+
+.irs-bar {
+    border-top: 1px solid #1c2854 !important;
+    border-bottom: 1px solid #1c2854 !important;
+    background: #1c2854 !important;
+}
+.irs-bar-edge {
+    border-top: 1px solid #1c2854 !important;
+    border-bottom: 1px solid #1c2854 !important;
+    background: #1c2854 !important;
+}
+.irs-from, .irs-to, .irs-single {
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.333;
+    text-shadow: none;
+    padding: 1px 3px;
+    background: #1c2854 !important;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+/* ---- TABLE ---- */
+
+span.colHeader {
+    font-weight: bold;
+}
+span.rowHeader {
+    font-weight: bold;
+}
+
+/* ---- FORM GROUP ---- */
+
+.form-group.shiny-input-container {
+    /* Diminui o margin-bottom dos inputs */
+    margin-bottom: 5px !important;
+}
+
+
