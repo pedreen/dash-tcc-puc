@@ -31,7 +31,7 @@ options(warn = -1, scipen = 999)
 
 # Source files
 source('load_data/load_data.R')
-atualization_date_input <- '27-03-2021'
+atualization_date_input <- '14-04-2021'
 nome_projeto <- 'TCC-Puc'
 logo = 'PUCMINAS.png'
 
@@ -94,6 +94,14 @@ server <- function(input, output, session) {
             
             #menuItem("Tutorial", tabName = "tutorial", icon = icon("home")),
             
+            
+            pickerInput(
+                inputId = "indicadores",
+                label   =  "Selecione:",
+                choices = indicadores_list,
+                options = list(`live-search` = TRUE, `actions-box` = TRUE)
+            ),
+            
             # Análises
             menuItem(
                 "Análise Exploratória", icon = icon("chart-line"), #startExpanded = TRUE, 
@@ -102,15 +110,15 @@ server <- function(input, output, session) {
                 
             ),
             
-            # Dropdown de Y's
-            hidden(
-                pickerInput(
-                    inputId = "indicadores",
-                    label   =  "Selecione:",
-                    choices = lista_y,
-                    options = list(`live-search` = TRUE, `actions-box` = TRUE)
-                )
-            ), 
+            # # Dropdown de Y's
+            # hidden(
+            #     pickerInput(
+            #         inputId = "indicadores",
+            #         label   =  "Selecione:",
+            #         choices = lista_y,
+            #         options = list(`live-search` = TRUE, `actions-box` = TRUE)
+            #     )
+            # ), 
             
             # Simulador + Ajuste Manual
             menuItem(

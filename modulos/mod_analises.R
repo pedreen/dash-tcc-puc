@@ -9,8 +9,8 @@ mod_analises_ui <- function(id){
         
         uiOutput(ns('indicadores')),
         uiOutput(ns('table_y')), # Tabelas
-        uiOutput(ns('chart_y')) # gráficos para análise
-        # uiOutput(ns('ajustes')) # tabela original e ajustável + botões 
+        uiOutput(ns('chart_y')),# gráficos para análise
+        uiOutput(ns('comparacoes')) # comparação de indicadores
         
     )
     
@@ -113,8 +113,8 @@ mod_analises_server <- function(input, output, session, y_selected){
             # ValueBox dos dados de evoluçaõ do Covid 
             column(12,
                    valueBoxOutput(ns("info1"), width = 3),
-                   valueBoxOutput(ns("info2"), width = 3),
                    valueBoxOutput(ns("info3"), width = 3), 
+                   valueBoxOutput(ns("info2"), width = 3),
                    valueBoxOutput(ns("info4"), width = 3)
                    
             ), column(12,
@@ -292,18 +292,20 @@ mod_analises_server <- function(input, output, session, y_selected){
             ),
             
             tabPanel(
+                title = "VIX",
+                #div(style = 'overflow-x: scroll',
+                plotlyOutput(ns('plot_vix'))
+                
+            ),
+            
+            
+            tabPanel(
                 title = "Câmbio",
                 #div(style = 'overflow-x: scroll',
                 plotlyOutput(ns('plot_cambio'))
                 
             ),
             
-            tabPanel(
-                title = "VIX",
-                #div(style = 'overflow-x: scroll',
-                plotlyOutput(ns('plot_vix'))
-
-            ),
 
             tabPanel(
                 title = "Selic",
@@ -346,24 +348,97 @@ mod_analises_server <- function(input, output, session, y_selected){
     })
     
 
-    # output$table_y <- renderUI({
-    #     indicador <- y_selected()
-    #     
-    #     
-    #     
-    #     tbl <- reactable::reactable(df_rates,
-    #                                 pagination = FALSE,
-    #                                 highlight = TRUE,
-    #                                 height = 400,
-    #                                 sortable = TRUE,
-    #                                 borderless = TRUE,
-    #                                 defaultPageSize = nrow(df_rates)
-    #                                 # defaultSortOrder = "desc",
-    #                                 # defaultSorted = "Confirmed",
-    # 
-    #             )
-    #     
-    #     
-    # })
+    output$table_y <- renderUI({
+       
+        data_orig <- data_normalized %>% 
+            select(date, ibov, cambio, selic, risco, vix, gold_usd, bitcoin_usd) %>% 
+            mutate(ibov = ibov %>% format(big.mark = ".", decimal.mark = ",")) %>% 
+            mutate(cambio = cambio %>% round(digits = 2)) %>% 
+            mutate(gold_usd = gold_usd %>% format(big.mark = ".", decimal.mark = ",")) %>% 
+            mutate(bitcoin_usd = bitcoin_usd %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","))
+            
+            
+        colnames(data_orig) <- c('Data', 'Ibovespa', 'Taxa de Câmbio', 'Taxa Selic', 'Risco País', 'VIX',
+                                 'Ouro (USD)', 'Bitcoin (USD)')
+
+       output$table_indicadores <- renderReactable({
+            
+           tbl <- reactable::reactable(data_orig,
+                                       pagination = FALSE,
+                                       highlight = TRUE,
+                                       height = 400,
+                                       sortable = TRUE,
+                                       borderless = TRUE,
+                                       defaultPageSize = nrow(data_orig)
+                                       # defaultSortOrder = "desc",
+                                       # defaultSorted = "Confirmed",
+                                       
+           )
+           
+        })
+        
+        
+        ### UI
+        
+        box(title = "",
+            width = 12,
+            solidHeader = TRUE,
+
+            reactableOutput(ns('table_indicadores'))
+
+        )
+
+
+    })
+    
+    
+    #### Comparações
+    
+    output$comparacoes <- renderUI({
+
+
+        output$comp_chart <- renderPlotly({
+
+            indicador <- y_selected()
+
+            data_orig <- data_normalized
+
+            plot_ly(data_orig, x = ~date, y = ~bitcoin_usd,
+                    type = 'scatter', mode = 'lines',
+
+                    hoverinfo = 'text',
+                    text = ~paste("<b>Data:</b>", data_orig$date,
+                                  "\n<b>Preço do Bitcoin:</b>", paste(formatC(data_orig$bitcoin_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
+            ) %>%
+                layout(
+                    legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
+                    autosize = T,
+                    xaxis = list(title = '', showgrid = FALSE),
+                    yaxis = list(title = '<b>Preço do Bitcoin (USD)</b>')
+                )
+
+        })
+        
+        ### UI 
+        
+        box(title = "",
+            width = 12,
+            solidHeader = TRUE,
+            
+            column(4,
+            pickerInput(
+                inputId = "indicadores",
+                label   =  "Selecione:",
+                choices = indicadores_list,
+                multiple = TRUE,
+                options = list(`live-search` = TRUE, `actions-box` = TRUE,
+                               `max-options` = 2, `none-selected-text`="Nenhum item selecionado",
+                               `size` = 6)
+            )
+            )
+        )
+
+
+    })
     
 }
