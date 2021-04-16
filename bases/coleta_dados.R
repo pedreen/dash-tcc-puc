@@ -161,11 +161,66 @@ test <- data_orig_normalizada[-linhas,]
 
 library(rpart)
 modelo <- rpart(ibov ~ .,data = train, control = rpart.control(cp=0))
+modelo2 <- rpart(ibov ~ cambio + risco + selic,data = train, control = rpart.control(cp=0))
+modelo3 <- rpart(ibov ~ selic + vix + risco + cambio,data = train, control = rpart.control(cp=0))
 
 # Realizando previsões
 test$predict <- stats::predict(modelo, test)
 
 # Analisando resultados
 test$ibov_predict <- abs(round(test$predict/test$ibov, 4) -1)
-erros_predict <- summary(test$ibov_predict)
+erros_predict <- summary(test$ibov_predict) 
 erros_predict
+
+# Model 1
+treino <- train %>% select(date, ibov) %>% nest()
+teste <- test %>% select(date, predict) %>% nest()
+model_num <- 1
+model_type <- 'Árvore de Decisão'
+error_model_1 <- erros_predict
+saveRDS(error_model_1, 'bases/arvore/error_model_1')
+
+modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+
+# Model 2
+
+# Realizando previsões
+test$predict <- stats::predict(modelo2, test)
+
+# Analisando resultados
+test$ibov_predict <- abs(round(test$predict/test$ibov, 4) -1)
+erros_predict <- summary(test$ibov_predict) 
+erros_predict
+
+
+treino <- train %>% select(date, ibov) %>% nest()
+teste <- test %>% select(date, predict) %>% nest()
+model_num <- 2
+model_type <- 'Árvore de Decisão'
+error_model_2 <- erros_predict2
+saveRDS(error_model_2, 'bases/arvore/error_model_2')
+
+modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+
+# Model 3
+# Realizando previsões
+test$predict <- stats::predict(modelo3, test)
+
+# Analisando resultados
+test$ibov_predict <- abs(round(test$predict/test$ibov, 4) -1)
+erros_predict <- summary(test$ibov_predict) 
+erros_predict
+
+treino <- train %>% select(date, ibov) %>% nest()
+teste <- test %>% select(date, predict) %>% nest()
+model_num <- 3
+model_type <- 'Árvore de Decisão'
+error_model_3 <- erros_predict3
+saveRDS(error_model_3, 'bases/arvore/error_model_3')
+
+modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+
+forecast_tree <- bind_rows(modelo1, modelo2, modelo3)
+colnames(forecast_tree) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit')
+
+saveRDS(forecast_tree, 'bases/arvore/forecast_tree')

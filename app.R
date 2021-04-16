@@ -24,6 +24,7 @@ suppressMessages({
     library(randomForest)
     library(shinycssloaders) # Lib para spinners
     library(reactable)
+    library(ggcorrplot)
 
 })
 
@@ -71,7 +72,9 @@ ui <- dashboardPage(
 
             tabItem(tabName = "analises", mod_analises_ui("analises")),
 
-            tabItem(tabName = "previsao", mod_previsoes_ui("previsao"))
+            tabItem(tabName = "previsao_arima", mod_previsoes_arima_ui("previsao_arima")),
+            
+            tabItem(tabName = "previsao_arvore", mod_previsoes_arvore_ui("previsao_arvore"))
             
             
         )
@@ -105,8 +108,7 @@ server <- function(input, output, session) {
             # Análises
             menuItem(
                 "Análise Exploratória", icon = icon("chart-line"), #startExpanded = TRUE, 
-                menuSubItem('Comparação de indicadores', tabName = "analises"),
-                menuSubItem('Séries temporais', tabName = "ser_temp")
+                menuSubItem('Comparação de indicadores', tabName = "analises")
                 
             ),
             
@@ -122,10 +124,10 @@ server <- function(input, output, session) {
             
             # Simulador + Ajuste Manual
             menuItem(
-                'Explorando os modelos', icon = icon('fas fa-medal'),
+                'Explorando os modelos', #icon = icon('fas fa-medal'),
                 
-                menuSubItem("ARIMA", tabName = "arima"), 
-                menuSubItem("Árvore de Decisão", tabName = "arv_decisao")
+                menuSubItem("ARIMA", tabName = "previsao_arima"), 
+                menuSubItem("Árvore de Decisão", tabName = "previsao_arvore")
             ),
             
             # # Botão para ajustes escondido
@@ -142,7 +144,9 @@ server <- function(input, output, session) {
     
     # callModule(mod_tutorial,  'tutorial')
     callModule(mod_analises_server,  'analises', reactive(input$indicadores))
-    callModule(mod_previsoes_server,  'analises1')
+
+    callModule(mod_previsoes_arvore_server, 'previsao_arvore')
+    callModule(mod_previsoes_arima_server, 'previsao_arima')
     
 
     # Loading... ----

@@ -4,6 +4,12 @@
 # sapply(c(files.sources_y), source)
 data_normalized <- readRDS('www/data_normalized')
 
+forecast_tree <- readRDS('bases/arvore/forecast_tree')
+
+erro_tree1 <- readRDS('bases/arvore/error_model_1')
+erro_tree2 <- readRDS('bases/arvore/error_model_2')
+erro_tree3 <- readRDS('bases/arvore/error_model_3')
+
 indicadores_list <- c('Ibovespa' = "ibov", 'Taxa de Câmbio' = "cambio", 'Vix' = "vix", 'Ouro' = "gold_usd", 'Taxa Selic' = "selic", 'Risco País' = "risco", 'Bitcoin' = "bitcoin_usd")
 
 # Carregando módulos
