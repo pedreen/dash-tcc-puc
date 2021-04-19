@@ -159,6 +159,8 @@ train <- data_orig_normalizada[linhas,]
 # Dados de teste 30%
 test <- data_orig_normalizada[-linhas,]
 
+# Arvode de Decisão
+
 library(rpart)
 modelo <- rpart(ibov ~ .,data = train, control = rpart.control(cp=0))
 modelo2 <- rpart(ibov ~ cambio + risco + selic,data = train, control = rpart.control(cp=0))

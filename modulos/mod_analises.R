@@ -147,10 +147,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                       "\n<b>Ibovespa:</b>", paste(formatC(data_orig$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
                     ) %>%
                         layout(
+                            title = '<b>Índice Ibovespa</b>',
                             legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                             autosize = T, 
                             xaxis = list(title = '', showgrid = FALSE),
-                            yaxis = list(title = '<b>Índice Ibovespa</b>')
+                            yaxis = list(title = '')
                         ) 
 
         })
@@ -167,10 +168,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>Taxa de Câmbio:</b>", paste(formatC(data_orig$cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
             ) %>%
                 layout(
+                    title = '<b>Taxa de Câmbio (R$)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Taxa de Câmbio (R$)</b>')
+                    yaxis = list(title = '')
                 ) 
             
         })
@@ -188,10 +190,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>VIX:</b>", paste(formatC(data_orig$vix, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 layout(
+                    title = '<b>Índice CBOE (Chicago Board Options Exchange)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Índice CBOE (Chicago Board Options Exchange)</b>')
+                    yaxis = list(title = '')
                 ) 
             
         })
@@ -210,10 +213,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"))
             ) %>%
                 layout(
+                    title = '<b>Taxa Selic (%)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Taxa Selic (%)</b>')
+                    yaxis = list(title = '')
                 ) 
             
         })
@@ -231,10 +235,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>Risco País:</b>", paste(formatC(data_orig$risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 layout(
+                    title = '<b>Risco País (Emerging Market Bond Index Brasil)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Risco País (Emerging Market Bond Index Brasil)</b>')
+                    yaxis = list(title = '')
                 ) 
             
         })
@@ -251,10 +256,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>Preço do Ouro:</b>", paste(formatC(data_orig$gold_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
             ) %>%
                 layout(
+                    title = '<b>Preço do Ouro (USD)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Preço do Ouro (USD)</b>')
+                    yaxis = list(title = '')
                 ) 
             
         })
@@ -272,10 +278,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>Preço do Bitcoin:</b>", paste(formatC(data_orig$bitcoin_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
             ) %>%
                 layout(
+                    title = '<b>Preço do Bitcoin (USD)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Preço do Bitcoin (USD)</b>')
+                    yaxis = list(title = '')
                 ) 
             
         })
@@ -347,21 +354,30 @@ mod_analises_server <- function(input, output, session, y_selected){
         # )
     })
     
-
-    output$table_y <- renderUI({
-       
+    tabela_react <- reactive({
+        
         data_orig <- data_normalized %>% 
             select(date, ibov, cambio, selic, risco, vix, gold_usd, bitcoin_usd) %>% 
             mutate(ibov = ibov %>% format(big.mark = ".", decimal.mark = ",")) %>% 
             mutate(cambio = cambio %>% round(digits = 2)) %>% 
             mutate(gold_usd = gold_usd %>% format(big.mark = ".", decimal.mark = ",")) %>% 
             mutate(bitcoin_usd = bitcoin_usd %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","))
-            
-            
+        
+        
         colnames(data_orig) <- c('Data', 'Ibovespa', 'Taxa de Câmbio', 'Taxa Selic', 'Risco País', 'VIX',
                                  'Ouro (USD)', 'Bitcoin (USD)')
+        
+        data_orig
+    })
+    
+
+    output$table_y <- renderUI({
+
 
        output$table_indicadores <- renderReactable({
+           
+           data_orig <- tabela_react()
+           
             
            tbl <- reactable::reactable(data_orig,
                                        pagination = FALSE,
@@ -376,6 +392,17 @@ mod_analises_server <- function(input, output, session, y_selected){
            )
            
         })
+       
+       # Download button
+       
+       output$download_table_indicadores <- downloadHandler(
+           filename = function(){
+               paste0(paste0("Tabela_indicadores"), ".xlsx")
+           }, 
+           content = function(fname){
+               writexl::write_xlsx(tabela_react(), fname)
+           }
+       )
         
         
         ### UI
@@ -384,7 +411,9 @@ mod_analises_server <- function(input, output, session, y_selected){
             width = 12,
             solidHeader = TRUE,
 
-            reactableOutput(ns('table_indicadores'))
+            reactableOutput(ns('table_indicadores')),
+            
+            footer = div(align = "right", downloadButton(ns("download_table_indicadores"), "Exportar para excel"))
 
         )
 
