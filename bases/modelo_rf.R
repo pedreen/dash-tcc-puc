@@ -70,6 +70,17 @@ plot_min_depth_distribution(min_depth_frame)
 
 importance_frame <- measure_importance(forest)
 plot_multi_way_importance(importance_frame, size_measure = 'no_of_nodes')
+saveRDS(importance_frame, 'www/importance_frame')
+
+importance_frame2 <- measure_importance(forest2)
+plot_multi_way_importance(importance_frame, size_measure = 'no_of_nodes')
+saveRDS(importance_frame2, 'www/importance_frame2')
+
+
+importance_frame3 <- measure_importance(forest3)
+plot_multi_way_importance(importance_frame, size_measure = 'no_of_nodes')
+saveRDS(importance_frame3, 'www/importance_frame3')
+
 
 
 plot_multi_way_importance(importance_frame, x_measure = 'mse_increase' , y_measure = 'node_purity_increase', size_measure = 'p_value',

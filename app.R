@@ -27,7 +27,7 @@ suppressMessages({
     library(ggcorrplot)
     library(corrplot)
     library(xgboost)
-
+    library(randomForestExplainer)
 })
 
 options(warn = -1, scipen = 999)
@@ -76,7 +76,9 @@ ui <- dashboardPage(
 
             tabItem(tabName = "previsao_arima", mod_previsoes_arima_ui("previsao_arima")),
             
-            tabItem(tabName = "previsao_arvore", mod_previsoes_arvore_ui("previsao_arvore"))
+            tabItem(tabName = "previsao_arvore", mod_previsoes_arvore_ui("previsao_arvore")),
+            
+            tabItem(tabName = "previsao_rf", mod_previsoes_rf_ui("previsao_rf"))
             
             
         )
@@ -129,8 +131,11 @@ server <- function(input, output, session) {
                 'Explorando os modelos', #icon = icon('fas fa-medal'),
                 
                 menuSubItem("ARIMA", tabName = "previsao_arima"), 
-                menuSubItem("Árvore de Decisão", tabName = "previsao_arvore")
+                menuSubItem("Árvore de Decisão", tabName = "previsao_arvore"),
+                menuSubItem("Random Forest", tabName = "previsao_rf")
+                
             ),
+
             
             # # Botão para ajustes escondido
             # hidden(actionButton("btn_sidebar", "")),
@@ -149,6 +154,7 @@ server <- function(input, output, session) {
 
     callModule(mod_previsoes_arvore_server, 'previsao_arvore')
     callModule(mod_previsoes_arima_server, 'previsao_arima')
+    callModule(mod_previsoes_rf_server, 'previsao_rf')
     
 
     # Loading... ----

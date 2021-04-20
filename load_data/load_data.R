@@ -6,7 +6,20 @@ data_normalized <- readRDS('www/data_normalized')
 
 data_coleta <- last(data_normalized$date)
 
+# forecast tree
 forecast_tree <- readRDS('bases/arvore/forecast_tree')
+
+# forecast random forest
+forecast_rf <- readRDS('bases/randomForest/forecast_rf')
+
+# Disp data rf
+disp_model1 <- readRDS('www/min_depth_frame1')
+disp_model2 <- readRDS('www/min_depth_frame2')
+disp_model3 <- readRDS('www/min_depth_frame3')
+
+imp_mode1 <- readRDS('www/importance_frame')
+imp_mode2 <- readRDS('www/importance_frame2')
+imp_mode3 <- readRDS('www/importance_frame3')
 
 erro_tree1 <- readRDS('bases/arvore/error_model_1')
 erro_tree2 <- readRDS('bases/arvore/error_model_2')
