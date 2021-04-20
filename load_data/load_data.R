@@ -4,6 +4,8 @@
 # sapply(c(files.sources_y), source)
 data_normalized <- readRDS('www/data_normalized')
 
+data_coleta <- last(data_normalized$date)
+
 forecast_tree <- readRDS('bases/arvore/forecast_tree')
 
 erro_tree1 <- readRDS('bases/arvore/error_model_1')

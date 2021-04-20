@@ -7,6 +7,9 @@ mod_previsoes_arvore_ui <- function(id){
     
     fluidPage(
         
+        uiOutput(ns('correlcao')), # correlação
+       
+        fluidRow( 
         box(title = "",
             width = 4,
             solidHeader = TRUE,
@@ -28,10 +31,11 @@ mod_previsoes_arvore_ui <- function(id){
             h4("Error Summary"),
             verbatimTextOutput(ns('erro'))
 
-        ),
+        )),
         
-        uiOutput(ns('decision_tree')), # tipo de modelo
-        uiOutput(ns('anual_view')) # gráficos com dado histórico e forecast 
+        uiOutput(ns('anual_view')), # gráficos com dado histórico e forecast 
+        uiOutput(ns('decision_tree')) # tipo de modelo
+       
 
     )
     
@@ -43,33 +47,60 @@ mod_previsoes_arvore_server <- function(input, output, session){
     
     ns <- session$ns
     
+    output$correlcao <- renderUI({
+        
+        ### Correlações
+        output$correlacao1 <- renderPlot({
+            
+            correlacao <- data_normalized %>% select(-date, -dummy_date)
+            correlacao <- cor(correlacao)
+            
+            corrplot(correlacao, type = "upper", order = "hclust", 
+                     tl.col = "black", tl.srt = 45, addCoef.col = T)
+            
+            
+            
+        })
+        
+        output$correlacao2 <- renderPlot({
+            
+            correlacao <- data_normalized %>% select(-date, -dummy_date)
+            correlacao <- cor(correlacao)
+            
+            ggcorrplot(correlacao, method = 'circle', 
+                       lab = T, lab_size = 3)
+            
+            
+        })
+        
+        ### UI 
+        
+        fluidRow(
+            tabBox(
+                title = 'Correlação',
+                width  = 12,
+                tabPanel(
+                    title = "Função cor()",
+                    #div(style = 'overflow-x: scroll',
+                    plotOutput(ns('correlacao1'))
+                    
+                ),
+                
+                tabPanel(
+                    title = "Função ggcorrplot()",
+                    #div(style = 'overflow-x: scroll',
+                    plotOutput(ns('correlacao2'))
+                    
+                )
+            )
+        )
+        
+    })
+    
+    
     
     output$decision_tree <- renderUI({
-        
-    ### Correlações
-    output$correlacao1 <- renderPlot({
-        
-        correlacao <- data_orig_normalizada %>% select(-date, -dummy_date)
-        correlacao <- cor(correlacao)
-        
-        corrplot(correlacao, type = "upper", order = "hclust", 
-                 tl.col = "black", tl.srt = 45)
-        
-        
-        
-    })
-    
-    output$correlacao2 <- renderPlot({
-        
-        correlacao <- data_orig_normalizada %>% select(-date, -dummy_date)
-        correlacao <- cor(correlacao)
-        
-        ggcorrplot(correlacao, method = 'circle', 
-                   lab = T, lab_size = 3)
-        
-        
-    })
-    
+
     ## Erro
     
     output$erro <- renderPrint({
@@ -88,7 +119,7 @@ mod_previsoes_arvore_server <- function(input, output, session){
         
     })
     
-    
+
     ## Gráficos
     
     output$comparacao_plot <- renderPlotly({
@@ -107,7 +138,7 @@ mod_previsoes_arvore_server <- function(input, output, session){
             
             add_trace(
                 x = data_orig$date, y = data_orig$ibov,
-                name = 'Hist.',
+                name = 'Dado Histórico (Hist.)',
                 line = list(color = "rgb(47, 73, 139)"),
                 hoverinfo = 'text',
                 text = ~paste("<b>Modelo:</b>", model_num,
@@ -119,7 +150,7 @@ mod_previsoes_arvore_server <- function(input, output, session){
             
             add_trace(
                 x = data_fit$date, y = data_fit$predict,
-                name = 'Fit',
+                name = 'Forecast (Fit)',
                 line = list(color = "rgb(250, 0, 0)", dash = 'dot'), 
                 hoverinfo = 'text',
                 text = ~paste("<b>Modelo:</b>", model_num,
@@ -139,26 +170,8 @@ mod_previsoes_arvore_server <- function(input, output, session){
     
     
     ##### UI
-    
-    tabBox(
-        title = 'Correlação',
-        width  = 12,
-        tabPanel(
-            title = "Função cor()",
-            #div(style = 'overflow-x: scroll',
-            plotOutput(ns('correlacao1'))
-            
-        ),
-        
-        tabPanel(
-            title = "Função ggcorrplot()",
-            #div(style = 'overflow-x: scroll',
-            plotOutput(ns('correlacao2'))
-            
-        )
-    )
-    
-    
+
+    fluidRow(
     box(title = "",
         width = 12,
         solidHeader = TRUE,
@@ -166,7 +179,7 @@ mod_previsoes_arvore_server <- function(input, output, session){
         plotlyOutput(ns('comparacao_plot'))
         
     )
-    
+    )
 
     })
     
@@ -248,6 +261,104 @@ mod_previsoes_arvore_server <- function(input, output, session){
             
         })
         
+        output$pareto <- renderPlotly({
+            
+            model_num <- input$model
+        
+            forecast <- forecast_tree %>% filter(forecast_tree$numero_modelo == model_num)
+            
+            forecast <- forecast$model_hist
+            forecast <- forecast[[1]]
+            forecast <- forecast[order(forecast$date),]
+            
+            forecast_anual <- forecast %>% 
+                mutate(ano = year(date)) %>% 
+                group_by(ano) %>% 
+                summarise(nivel_anual = sum(ibov, na.rm = TRUE)) %>% 
+                ungroup() %>% 
+                mutate(taxa_anual = nivel_anual/lag(nivel_anual) - 1) %>% 
+                mutate_at(vars(taxa_anual), ~ round(.*100, 2)) %>% # passa p/ porcentagem
+                filter(!is.na(taxa_anual))
+            
+            
+            line <- list(width = "1.5", shape = "spline", smoothing = 0.50)
+            
+            plot_ly() %>% 
+                
+                add_trace(data = forecast_anual,
+                          x = ~as.character(ano),
+                          y = ~nivel_anual, 
+                          type = 'bar', name = "Nível", 
+                          text = forecast_anual$nivel_anual %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","), textposition = 'auto'
+                ) %>% 
+                
+                add_trace(data = forecast_anual,
+                          x = ~as.character(ano),
+                          y = ~taxa_anual, 
+                          type = 'scatter', mode = 'lines+markers', 
+                          line = c(line, list(color = 'rgb(36,45,55)')),
+                          marker = list(color = 'rgb(36,45,55)'), 
+                          legendgroup = "yoy", name = paste("YoY", "(%)"), yaxis = 'y2') %>% 
+                
+
+                layout(title = '<b>Dados Históricos</b>',
+                       legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.35), 
+                       xaxis = list(title = ''),
+                       yaxis = list(title = 'Nível YoY'),
+                       yaxis2 = list(title = 'Variação YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
+                       margin = list(l = 20, r = 60))
+            
+        })
+        
+        
+        output$pareto_forecast <- renderPlotly({
+            
+            model_num <- input$model
+            
+            forecast <- forecast_tree %>% filter(forecast_tree$numero_modelo == model_num)
+            
+            forecast <- forecast$model_fit
+            forecast <- forecast[[1]]
+            
+            forecast_anual <- forecast %>% 
+                mutate(ano = year(date)) %>% 
+                group_by(ano) %>% 
+                summarise(nivel_anual = sum(predict, na.rm = TRUE)) %>% 
+                ungroup() %>% 
+                mutate(taxa_anual = nivel_anual/lag(nivel_anual) - 1) %>% 
+                mutate_at(vars(taxa_anual), ~ round(.*100, 2)) %>% # passa p/ porcentagem
+                filter(!is.na(taxa_anual))
+            
+            
+            line <- list(width = "1.5", shape = "spline", smoothing = 0.50)
+            
+            plot_ly() %>% 
+                
+                add_trace(data = forecast_anual,
+                          x = ~as.character(ano),
+                          y = ~nivel_anual, 
+                          type = 'bar', name = "Nível", 
+                          text = forecast_anual$nivel_anual %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","), textposition = 'auto'
+                ) %>% 
+                
+                add_trace(data = forecast_anual,
+                          x = ~as.character(ano),
+                          y = ~taxa_anual, 
+                          type = 'scatter', mode = 'lines+markers', 
+                          line = c(line, list(color = 'rgb(36,45,55)')),
+                          marker = list(color = 'rgb(36,45,55)'), 
+                          legendgroup = "yoy", name = paste("YoY", "(%)"), yaxis = 'y2') %>% 
+                
+                
+                layout(title = '<b>Dados Forecast</b>',
+                       legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.35), 
+                       xaxis = list(title = ''),
+                       yaxis = list(title = 'Nível YoY'),
+                       yaxis2 = list(title = 'Variação YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
+                       margin = list(l = 20, r = 60))
+            
+        })
+        
         
         #### UI
         
@@ -267,11 +378,26 @@ mod_previsoes_arvore_server <- function(input, output, session){
         )
         )
         
+        fluidRow(
+            box(title = "",
+                width = 6,
+                solidHeader = TRUE,
+                
+                plotlyOutput(ns('pareto'))
+            ),
+            
+            box(title = "",
+                width = 6,
+                solidHeader = TRUE,
+
+                plotlyOutput(ns('pareto_forecast'))
+            )
+        )
+        
         
     })
     
 }
-
 
 
 
@@ -294,6 +420,58 @@ mod_previsoes_arima_ui <- function(id){
 
 
 mod_previsoes_arima_server <- function(input, output, session){
+    
+    
+    
+    ns <- session$ns
+    
+    
+}
+
+
+
+# Ramdom Forest
+
+mod_previsoes_rf_ui <- function(id){
+    
+    ns <- NS(id)
+    
+    fluidPage(
+        
+        fluidRow( 
+            box(title = "",
+                width = 4,
+                solidHeader = TRUE,
+                column(4,
+                       selectInput(
+                           inputId = ns('model'),
+                           label = 'Selecione o modelo:',
+                           choices = c(1,2,3),
+                           selected = 1
+                           
+                       )
+                )
+            ),
+            
+            box(title = "",
+                width = 8,
+                solidHeader = TRUE,
+                
+                h4("Error Summary"),
+                verbatimTextOutput(ns('erro'))
+                
+            )),
+        
+        uiOutput(ns('rf')) # tipo de modelo
+        # uiOutput(ns('visualizacoes')), # gráfico com histórico + projeção (original e ajustada)
+        # uiOutput(ns('ajustes')) # tabela original e ajustável + botões 
+        
+    )
+    
+}
+
+
+mod_previsoes_rf_server <- function(input, output, session){
     
     
     

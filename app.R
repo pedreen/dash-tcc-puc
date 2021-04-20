@@ -25,6 +25,8 @@ suppressMessages({
     library(shinycssloaders) # Lib para spinners
     library(reactable)
     library(ggcorrplot)
+    library(corrplot)
+    library(xgboost)
 
 })
 
@@ -32,7 +34,7 @@ options(warn = -1, scipen = 999)
 
 # Source files
 source('load_data/load_data.R')
-atualization_date_input <- '14-04-2021'
+atualization_date_input <- data_coleta
 nome_projeto <- 'TCC-Puc'
 logo = 'PUCMINAS.png'
 
@@ -98,12 +100,12 @@ server <- function(input, output, session) {
             #menuItem("Tutorial", tabName = "tutorial", icon = icon("home")),
             
             
-            pickerInput(
-                inputId = "indicadores",
-                label   =  "Selecione:",
-                choices = indicadores_list,
-                options = list(`live-search` = TRUE, `actions-box` = TRUE)
-            ),
+            # pickerInput(
+            #     inputId = "indicadores",
+            #     label   =  "Selecione:",
+            #     choices = indicadores_list,
+            #     options = list(`live-search` = TRUE, `actions-box` = TRUE)
+            # ),
             
             # Análises
             menuItem(
