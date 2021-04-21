@@ -454,9 +454,31 @@ mod_previsoes_rf_ui <- function(id){
                            
                        )
                 )
-            ) 
+            ),
+            
+            box(title = "Inormações do modelo", 
+                width = 8, 
+                solidHeader = T, 
+                verbatimTextOutput(ns("info"))
+            )
             
 
+        ),
+        
+        fluidRow(
+            
+            box(title = "Importancia das variáveis", 
+                width = 6, 
+                solidHeader = T, 
+                verbatimTextOutput(ns("var_imp"))
+            ), 
+            
+            box(title = "Importancia das variáveis (Chart)", 
+                width = 6, 
+                solidHeader = T, 
+                plotOutput(ns("var_imp_chart"))
+            )
+            
         ),
         
         fluidRow(
@@ -497,6 +519,7 @@ mod_previsoes_rf_ui <- function(id){
         ),    
         
         #uiOutput(ns('correlacao')),
+        uiOutput(ns('info_model')),
         uiOutput(ns('prediction_rf')),
         uiOutput(ns('rf')) # tipo de modelo
         
@@ -510,6 +533,81 @@ mod_previsoes_rf_server <- function(input, output, session){
     
     
     ns <- session$ns
+    
+    
+        output$info <- renderPrint({
+            
+            model_num <- input$model
+            
+            if(model_num == 1){
+                
+                data <- model1
+                
+            } else if(model_num == 2){
+                
+                data <- model2
+                
+            } else {
+                
+                data <- model3
+                
+            }
+            
+            data
+            
+        })
+
+        
+        output$var_imp <- renderPrint({
+            
+            
+            model_num <- input$model
+            
+            if(model_num == 1){
+                
+                data <- model1
+                
+            } else if(model_num == 2){
+                
+                data <- model2
+                
+            } else {
+                
+                data <- model3
+                
+            }
+            
+            a <- importance(data)
+            
+            print(a)
+            
+        })
+        
+        
+        
+        output$var_imp_chart <- renderPlot({
+            
+            
+            model_num <- input$model
+            
+            if(model_num == 1){
+                
+                data <- model1
+                
+            } else if(model_num == 2){
+                
+                data <- model2
+                
+            } else {
+                
+                data <- model3
+                
+            }
+            
+            varImpPlot(data, col="darkblue", pch=19)
+            
+        })
+        
     
     output$correlacao <- renderUI({
         
@@ -912,7 +1010,7 @@ mod_previsoes_rf_server <- function(input, output, session){
         
     })
     
-    
+
     # output$disp_rf4 <- renderPlot({
     #     
     #     model_num <- input$model

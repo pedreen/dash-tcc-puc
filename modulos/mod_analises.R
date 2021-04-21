@@ -10,7 +10,8 @@ mod_analises_ui <- function(id){
         uiOutput(ns('indicadores')),
         uiOutput(ns('table_y')), # Tabelas
         uiOutput(ns('chart_y')),# gráficos para análise
-        uiOutput(ns('comparacoes')) # comparação de indicadores
+        uiOutput(ns('comparacao')), # comparação de indicadores
+        uiOutput(ns('candlestick')) # candlw sticks charts
         
     )
     
@@ -421,48 +422,107 @@ mod_analises_server <- function(input, output, session, y_selected){
     
     #### Comparações
     
-    output$comparacoes <- renderUI({
+    output$comparacao <- renderUI({
 
 
-        output$comp_chart <- renderPlotly({
+        output$ibov_selic_risco <- renderPlotly({
 
             indicador <- y_selected()
 
             data_orig <- data_normalized
 
-            plot_ly(data_orig, x = ~date, y = ~bitcoin_usd,
-                    type = 'scatter', mode = 'lines',
+            plot_ly(data_orig, x = ~selic, y = ~ibov,
+                    type = 'scatter', 
+                    mode = "markers",
+                    color = data_orig$risco,
+                    # type = 'scatter', mode = 'lines',
 
                     hoverinfo = 'text',
-                    text = ~paste("<b>Data:</b>", data_orig$date,
-                                  "\n<b>Preço do Bitcoin:</b>", paste(formatC(data_orig$bitcoin_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
+                    text = ~paste("<b>Ibovespa:</b>", data_orig$ibov,
+                                  "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
+                                  "\n<b>Risco País:</b>", paste(formatC(data_orig$risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 layout(
-                    legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
+                    title = '<b>Ibovespa x Taxa Selic x Risco País</b>',
+                    #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T,
-                    xaxis = list(title = '', showgrid = FALSE),
-                    yaxis = list(title = '<b>Preço do Bitcoin (USD)</b>')
+                    xaxis = list(title = 'Taxa Selic (%)', showgrid = FALSE),
+                    yaxis = list(title = 'Ibovespa')
                 )
 
         })
         
+        
+        output$ibov_selic_cambio <- renderPlotly({
+            
+            indicador <- y_selected()
+            
+            data_orig <- data_normalized
+            
+            plot_ly(data_orig, x = ~selic, y = ~ibov,
+                    type = 'scatter', 
+                    mode = "markers",
+                    color = data_orig$cambio,
+                    # type = 'scatter', mode = 'lines',
+                    
+                    hoverinfo = 'text',
+                    text = ~paste("<b>Ibovespa:</b>", data_orig$ibov,
+                                  "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
+                                  "\n<b>Câmbio:</b>", paste(formatC(data_orig$cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
+            ) %>%
+                layout(
+                    title = '<b>Ibovespa x Taxa Selic x Câmbio</b>',
+                    #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
+                    autosize = T,
+                    xaxis = list(title = 'Taxa Selic (%)', showgrid = FALSE),
+                    yaxis = list(title = 'Ibovespa')
+                )
+            
+        })
+        
+        
+        #### Candle
+        
+        output$ibov_candle <- renderPlotly({
+            
+            getSymbols('^BVSP')
+            ibov_series <- tk_tbl(BVSP, preserve_index = T, rename_index = 'date')
+            
+            plot_ly(ibov_series, x = ~date,
+                    type="candlestick",
+                    open = ~BVSP.Open, close = ~BVSP.Close,
+                    high = ~BVSP.High, low = ~BVSP.Low 
+            ) %>%
+                layout(
+                    title = '<b>Ibovespa (Candlestick)</b>',
+                    xaxis = list(title = 'Data')
+                )
+            
+        })
+        
+        
         ### UI 
         
-        box(title = "",
+        tabBox(
+            width  = 12,
+            tabPanel(
+            title = 'Ibov x Selic x Risco País',
+            plotlyOutput(ns('ibov_selic_risco'))
+        ),
+        
+        
+        tabPanel(
+            title = 'Ibov x Selic x Câmbio',
+            plotlyOutput(ns('ibov_selic_cambio'))
+        )
+        
+        )
+        
+        box(
             width = 12,
             solidHeader = TRUE,
             
-            column(4,
-            pickerInput(
-                inputId = "indicadores",
-                label   =  "Selecione:",
-                choices = indicadores_list,
-                multiple = TRUE,
-                options = list(`live-search` = TRUE, `actions-box` = TRUE,
-                               `max-options` = 2, `none-selected-text`="Nenhum item selecionado",
-                               `size` = 6)
-            )
-            )
+            plotlyOutput(ns('ibov_candle'))   
         )
 
 

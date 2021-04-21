@@ -9,6 +9,10 @@ data_coleta <- last(data_normalized$date)
 # forecast tree
 forecast_tree <- readRDS('bases/arvore/forecast_tree')
 
+erro_tree1 <- readRDS('bases/arvore/error_model_1')
+erro_tree2 <- readRDS('bases/arvore/error_model_2')
+erro_tree3 <- readRDS('bases/arvore/error_model_3')
+
 # forecast random forest
 forecast_rf <- readRDS('bases/randomForest/forecast_rf')
 
@@ -21,9 +25,9 @@ imp_mode1 <- readRDS('www/importance_frame')
 imp_mode2 <- readRDS('www/importance_frame2')
 imp_mode3 <- readRDS('www/importance_frame3')
 
-erro_tree1 <- readRDS('bases/arvore/error_model_1')
-erro_tree2 <- readRDS('bases/arvore/error_model_2')
-erro_tree3 <- readRDS('bases/arvore/error_model_3')
+model1 <- readRDS('bases/randomForest/model_rf1')
+model2 <- readRDS('bases/randomForest/model_rf2')
+model3 <- readRDS('bases/randomForest/model_rf3')
 
 indicadores_list <- c('Ibovespa' = "ibov", 'Taxa de Câmbio' = "cambio", 'Vix' = "vix", 'Ouro' = "gold_usd", 'Taxa Selic' = "selic", 'Risco País' = "risco", 'Bitcoin' = "bitcoin_usd")
 

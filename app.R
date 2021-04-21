@@ -28,6 +28,8 @@ suppressMessages({
     library(corrplot)
     library(xgboost)
     library(randomForestExplainer)
+    library(quantmod)
+    library(timetk)
 })
 
 options(warn = -1, scipen = 999)

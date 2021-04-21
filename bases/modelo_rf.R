@@ -19,6 +19,14 @@ forest2 <- randomForest(ibov ~ cambio + risco + selic, data = test[-1], localImp
 forest3 <- randomForest(ibov ~ selic + vix + risco + cambio, data = test[-1], localImp = T, mtry = 3, do.trace=T, importance = T, ntree=500)
 
 
+mtry <- tuneRF(test[-1],test$ibov, ntreeTry=500,
+               stepFactor=1.5,improve=0.01, trace=TRUE, plot=TRUE)
+best.m <- mtry[mtry[, 2] == min(mtry[, 2]), 1]
+print(mtry)
+print(best.m)
+
+
+
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>%
     mutate(predict = forest$predicted) %>% 
