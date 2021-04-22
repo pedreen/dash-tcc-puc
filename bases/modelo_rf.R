@@ -19,13 +19,8 @@ forest2 <- randomForest(ibov ~ cambio + risco + selic, data = test[-1], localImp
 forest3 <- randomForest(ibov ~ selic + vix + risco + cambio, data = test[-1], localImp = T, mtry = 3, do.trace=T, importance = T, ntree=500)
 
 
-mtry <- tuneRF(test[-1],test$ibov, ntreeTry=500,
-               stepFactor=1.5,improve=0.01, trace=TRUE, plot=TRUE)
-best.m <- mtry[mtry[, 2] == min(mtry[, 2]), 1]
-print(mtry)
-print(best.m)
 
-
+# cat("MSE: ", mse, "MAE: ", mae, " RMSE: ", rmse)
 
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>%
@@ -33,8 +28,11 @@ teste <- test %>%
     select(date, predict) %>% nest()
 model_num <- 1
 model_type <- 'Random Forest'
+mse_rf = mean((test$ibov - forest$predicted[[1]])^2)
+mae_rf = caret::MAE(test$ibov, forest$predicted[[1]])
+rmse_rf = caret::RMSE(test$ibov, forest$predicted[[1]])
 
-modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_rf, 'mae' = mae_rf, 'rmse' = rmse_rf) 
 
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>%
@@ -42,8 +40,11 @@ teste <- test %>%
     select(date, predict) %>% nest()
 model_num <- 2
 model_type <- 'Random Forest'
+mse_rf = mean((test$ibov - forest2$predicted[[1]])^2)
+mae_rf = caret::MAE(test$ibov, forest2$predicted[[1]])
+rmse_rf = caret::RMSE(test$ibov, forest2$predicted[[1]])
 
-modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_rf, 'mae' = mae_rf, 'rmse' = rmse_rf) 
 
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>%
@@ -51,11 +52,14 @@ teste <- test %>%
     select(date, predict) %>% nest()
 model_num <- 3
 model_type <- 'Random Forest'
+mse_rf = mean((test$ibov - forest3$predicted[[1]])^2)
+mae_rf = caret::MAE(test$ibov, forest3$predicted[[1]])
+rmse_rf = caret::RMSE(test$ibov, forest3$predicted[[1]])
 
-modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_rf, 'mae' = mae_rf, 'rmse' = rmse_rf) 
 
 forecast_rf <- bind_rows(modelo1, modelo2, modelo3)
-colnames(forecast_rf) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit')
+colnames(forecast_rf) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit', 'mse', 'mae', 'rmse')
 
 saveRDS(forecast_rf, 'bases/arvore/forecast_rf')
 

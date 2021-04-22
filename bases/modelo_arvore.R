@@ -49,8 +49,11 @@ model_num <- 1
 model_type <- 'Árvore de Decisão'
 error_model_1 <- erros_predict
 saveRDS(error_model_1, 'bases/arvore/error_model_1')
+mse_tree = mean((test$ibov - test$ibov_predict)^2)
+mae_tree = caret::MAE(test$ibov, test$ibov_predict)
+rmse_tree = caret::RMSE(test$ibov, test$ibov_predict)
 
-modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
 
 # Model 2
 
@@ -69,8 +72,11 @@ model_num <- 2
 model_type <- 'Árvore de Decisão'
 error_model_2 <- erros_predict
 saveRDS(error_model_2, 'bases/arvore/error_model_2')
+mse_tree = mean((test$ibov - test$ibov_predict)^2)
+mae_tree = caret::MAE(test$ibov, test$ibov_predict)
+rmse_tree = caret::RMSE(test$ibov, test$ibov_predict)
 
-modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
 
 # Model 3
 # Realizando previsões
@@ -87,11 +93,14 @@ model_num <- 3
 model_type <- 'Árvore de Decisão'
 error_model_3 <- erros_predict
 saveRDS(error_model_3, 'bases/arvore/error_model_3')
+mse_tree = mean((test$ibov - test$ibov_predict)^2)
+mae_tree = caret::MAE(test$ibov, test$ibov_predict)
+rmse_tree = caret::RMSE(test$ibov, test$ibov_predict)
 
-modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste) 
+modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
 
 forecast_tree <- bind_rows(modelo1, modelo2, modelo3)
-colnames(forecast_tree) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit')
+colnames(forecast_tree) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit', 'mse', 'mae', 'rmse')
 
 saveRDS(forecast_tree, 'bases/arvore/forecast_tree')
 

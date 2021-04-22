@@ -41,8 +41,9 @@ mod_analises_server <- function(input, output, session, y_selected){
             value2 <- data_normalized$cambio %>% round(2) %>% last() %>% format(big.mark = ".") 
             valueBox(
                 "Câmbio",
-                paste(value2, " %"),
-                icon = icon("percentage")
+                color = 'orange',
+                paste("R$ ",value2),
+                icon = icon("hand-holding-usd")
             )
             
         })
@@ -85,7 +86,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             valueBox(
                 "Ouro",
                 color = 'orange',
-                value6,
+                paste("$ ",value6),
                 icon = icon("hand-holding-usd")
             )
             
@@ -97,7 +98,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             valueBox(
                 "Bitcoin",
                 color = 'orange',
-                value7,
+                paste("$ ",value7),
                 icon = icon("hand-holding-usd")
             )
             
@@ -113,11 +114,11 @@ mod_analises_server <- function(input, output, session, y_selected){
             column(12,
                    valueBoxOutput(ns("info1"), width = 3),
                    valueBoxOutput(ns("info3"), width = 3), 
-                   valueBoxOutput(ns("info2"), width = 3),
+                   valueBoxOutput(ns("info5"), width = 3),
                    valueBoxOutput(ns("info4"), width = 3)
                    
             ), column(12,
-                      valueBoxOutput(ns("info5"), width = 4),
+                      valueBoxOutput(ns("info2"), width = 4),
                       valueBoxOutput(ns("info6"), width = 4),
                       valueBoxOutput(ns("info7"), width = 4)
             )

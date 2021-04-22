@@ -76,11 +76,13 @@ ui <- dashboardPage(
 
             tabItem(tabName = "analises", mod_analises_ui("analises")),
 
-            tabItem(tabName = "previsao_arima", mod_previsoes_arima_ui("previsao_arima")),
+            tabItem(tabName = "detales_model", mod_detalhes_modelos_ui("detales_model")),
             
             tabItem(tabName = "previsao_arvore", mod_previsoes_arvore_ui("previsao_arvore")),
             
-            tabItem(tabName = "previsao_rf", mod_previsoes_rf_ui("previsao_rf"))
+            tabItem(tabName = "previsao_rf", mod_previsoes_rf_ui("previsao_rf")),
+            
+            tabItem(tabName = "previsao_xgboost", mod_xgboost_ui("previsao_xgboost"))
             
             
         )
@@ -132,9 +134,10 @@ server <- function(input, output, session) {
             menuItem(
                 'Explorando os modelos', #icon = icon('fas fa-medal'),
                 
-                menuSubItem("ARIMA", tabName = "previsao_arima"), 
+                menuSubItem("Detalhes dos Modelos", tabName = "detales_model"), 
                 menuSubItem("Árvore de Decisão", tabName = "previsao_arvore"),
-                menuSubItem("Random Forest", tabName = "previsao_rf")
+                menuSubItem("Random Forest", tabName = "previsao_rf"),
+                menuSubItem("XGBOOST", tabName = "previsao_xgboost"),
                 
             ),
 
@@ -153,10 +156,10 @@ server <- function(input, output, session) {
     
     # callModule(mod_tutorial,  'tutorial')
     callModule(mod_analises_server,  'analises', reactive(input$indicadores))
-
     callModule(mod_previsoes_arvore_server, 'previsao_arvore')
-    callModule(mod_previsoes_arima_server, 'previsao_arima')
+    callModule(mod_detalhes_modelos_server, 'detales_model')
     callModule(mod_previsoes_rf_server, 'previsao_rf')
+    callModule(mod_xgboost_server, 'previsao_xgboost')
     
 
     # Loading... ----

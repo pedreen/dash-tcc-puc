@@ -400,36 +400,6 @@ mod_previsoes_arvore_server <- function(input, output, session){
 }
 
 
-
-
-# Model Arima
-
-mod_previsoes_arima_ui <- function(id){
-    
-    ns <- NS(id)
-    
-    fluidPage(
-        
-        uiOutput(ns('arima')) # tipo de modelo
-        # uiOutput(ns('visualizacoes')), # gráfico com histórico + projeção (original e ajustada)
-        # uiOutput(ns('ajustes')) # tabela original e ajustável + botões 
-        
-    )
-    
-}
-
-
-mod_previsoes_arima_server <- function(input, output, session){
-    
-    
-    
-    ns <- session$ns
-    
-    
-}
-
-
-
 # Ramdom Forest
 
 
@@ -1023,6 +993,74 @@ mod_previsoes_rf_server <- function(input, output, session){
     #     plot_predict_interaction(forecast_rf, data_normalized, 'selic', 'ibov')
     #     
     # })
+    
+    
+}
+
+
+
+
+# XGBOOST
+
+mod_xgboost_ui <- function(id){
+    
+    ns <- NS(id)
+    
+    fluidPage(
+        
+        uiOutput(ns('xgboost')) # tipo de modelo
+        # uiOutput(ns('visualizacoes')), # gráfico com histórico + projeção (original e ajustada)
+        # uiOutput(ns('ajustes')) # tabela original e ajustável + botões 
+        
+    )
+    
+}
+
+
+mod_xgboost_server <- function(input, output, session){
+    
+    
+    
+    ns <- session$ns
+    
+    
+    output$xgboost <- renderUI{(
+        
+        output$erros <- renderPrint({
+            
+            data <- forecast_xgboost
+            
+            cat("MSE: ", data$mse, "MAE: ", data$mae, " RMSE: ", data$rmse)
+            
+        })
+        
+        
+    )}
+    
+}
+
+# Detalhes modelos
+
+mod_detalhes_modelos_ui <- function(id){
+    
+    ns <- NS(id)
+    
+    fluidPage(
+        
+        uiOutput(ns('detalhes')) # tipo de modelo
+        # uiOutput(ns('visualizacoes')), # gráfico com histórico + projeção (original e ajustada)
+        # uiOutput(ns('ajustes')) # tabela original e ajustável + botões 
+        
+    )
+    
+}
+
+
+mod_detalhes_modelos_server <- function(input, output, session){
+    
+    
+    
+    ns <- session$ns
     
     
 }

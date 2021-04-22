@@ -39,4 +39,3 @@ lines(fitted(arima_fit),col="blue")
 
 
 
-
