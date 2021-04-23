@@ -7,11 +7,26 @@ mod_analises_ui <- function(id){
     
     fluidPage(
         
-        uiOutput(ns('indicadores')),
+        uiOutput(ns('indicadores')), # varBox com informações de indicadores
         uiOutput(ns('table_y')), # Tabelas
         uiOutput(ns('chart_y')),# gráficos para análise
         uiOutput(ns('comparacao')), # comparação de indicadores
-        uiOutput(ns('candlestick')) # candlw sticks charts
+        uiOutput(ns('candlestick')), # candlesticks charts
+        
+        tabBox(
+            width  = 12,
+            tabPanel(
+                title = 'Ibov x Selic x Risco País',
+                plotlyOutput(ns('ibov_selic_risco'))
+            ),
+            
+            
+            tabPanel(
+                title = 'Ibov x Câmbio x VIX',
+                plotlyOutput(ns('ibov_vix_cambio'))
+            )
+            
+        )
         
     )
     
@@ -141,7 +156,7 @@ mod_analises_server <- function(input, output, session, y_selected){
 
             plot_ly(data_orig, x = ~date, y = ~ibov,
                     type = 'scatter', mode = 'lines',
-
+                    line = list(color = "rgb(51, 122, 183)"),
                         hoverinfo = 'text',
                         text = ~paste("<b>Data:</b>", data_orig$date,
                                       "\n<b>Ibovespa:</b>", paste(formatC(data_orig$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
@@ -162,7 +177,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             plot_ly(data_orig, x = ~date, y = ~cambio,
                     type = 'scatter', mode = 'lines',
-                    
+                    line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
                     text = ~paste("<b>Data:</b>", data_orig$date,
                                   "\n<b>Taxa de Câmbio:</b>", paste(formatC(data_orig$cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
@@ -184,7 +199,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             plot_ly(data_orig, x = ~date, y = ~vix,
                     type = 'scatter', mode = 'lines',
-                    
+                    line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
                     text = ~paste("<b>Data:</b>", data_orig$date,
                                   "\n<b>VIX:</b>", paste(formatC(data_orig$vix, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
@@ -207,7 +222,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             plot_ly(data_orig, x = ~date, y = ~selic,
                     type = 'scatter', mode = 'lines',
-                    
+                    line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
                     text = ~paste("<b>Data:</b>", data_orig$date,
                                   "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"))
@@ -229,7 +244,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             plot_ly(data_orig, x = ~date, y = ~risco,
                     type = 'scatter', mode = 'lines',
-                    
+                    line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
                     text = ~paste("<b>Data:</b>", data_orig$date,
                                   "\n<b>Risco País:</b>", paste(formatC(data_orig$risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
@@ -250,7 +265,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             plot_ly(data_orig, x = ~date, y = ~gold_usd,
                     type = 'scatter', mode = 'lines',
-                    
+                    line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
                     text = ~paste("<b>Data:</b>", data_orig$date,
                                   "\n<b>Preço do Ouro:</b>", paste(formatC(data_orig$gold_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
@@ -272,7 +287,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             plot_ly(data_orig, x = ~date, y = ~bitcoin_usd,
                     type = 'scatter', mode = 'lines',
-                    
+                    line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
                     text = ~paste("<b>Data:</b>", data_orig$date,
                                   "\n<b>Preço do Bitcoin:</b>", paste(formatC(data_orig$bitcoin_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
@@ -364,7 +379,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             mutate(bitcoin_usd = bitcoin_usd %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","))
         
         
-        colnames(data_orig) <- c('Data', 'Ibovespa', 'Taxa de Câmbio', 'Taxa Selic', 'Risco País', 'VIX',
+        colnames(data_orig) <- c('Data', 'Ibovespa', 'Câmbio (R$)', 'Taxa Selic', 'Risco País', 'VIX',
                                  'Ouro (USD)', 'Bitcoin (USD)')
         
         data_orig
@@ -385,7 +400,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                                        height = 400,
                                        sortable = TRUE,
                                        borderless = TRUE,
-                                       defaultPageSize = nrow(data_orig)
+                                       defaultPageSize = nrow(data_orig),
+                                       defaultColDef = colDef(
+                                           align = 'center'
+                                       ),
+                                       bordered = TRUE
                                        # defaultSortOrder = "desc",
                                        # defaultSorted = "Confirmed",
                                        
@@ -425,63 +444,6 @@ mod_analises_server <- function(input, output, session, y_selected){
     
     output$comparacao <- renderUI({
 
-
-        output$ibov_selic_risco <- renderPlotly({
-
-            indicador <- y_selected()
-
-            data_orig <- data_normalized
-
-            plot_ly(data_orig, x = ~selic, y = ~ibov,
-                    type = 'scatter', 
-                    mode = "markers",
-                    color = data_orig$risco,
-                    # type = 'scatter', mode = 'lines',
-
-                    hoverinfo = 'text',
-                    text = ~paste("<b>Ibovespa:</b>", data_orig$ibov,
-                                  "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
-                                  "\n<b>Risco País:</b>", paste(formatC(data_orig$risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
-            ) %>%
-                layout(
-                    title = '<b>Ibovespa x Taxa Selic x Risco País</b>',
-                    #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
-                    autosize = T,
-                    xaxis = list(title = 'Taxa Selic (%)', showgrid = FALSE),
-                    yaxis = list(title = 'Ibovespa')
-                )
-
-        })
-        
-        
-        output$ibov_selic_cambio <- renderPlotly({
-            
-            indicador <- y_selected()
-            
-            data_orig <- data_normalized
-            
-            plot_ly(data_orig, x = ~selic, y = ~ibov,
-                    type = 'scatter', 
-                    mode = "markers",
-                    color = data_orig$cambio,
-                    # type = 'scatter', mode = 'lines',
-                    
-                    hoverinfo = 'text',
-                    text = ~paste("<b>Ibovespa:</b>", data_orig$ibov,
-                                  "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
-                                  "\n<b>Câmbio:</b>", paste(formatC(data_orig$cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
-            ) %>%
-                layout(
-                    title = '<b>Ibovespa x Taxa Selic x Câmbio</b>',
-                    #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
-                    autosize = T,
-                    xaxis = list(title = 'Taxa Selic (%)', showgrid = FALSE),
-                    yaxis = list(title = 'Ibovespa')
-                )
-            
-        })
-        
-        
         #### Candle
         
         output$ibov_candle <- renderPlotly({
@@ -503,22 +465,7 @@ mod_analises_server <- function(input, output, session, y_selected){
         
         
         ### UI 
-        
-        tabBox(
-            width  = 12,
-            tabPanel(
-            title = 'Ibov x Selic x Risco País',
-            plotlyOutput(ns('ibov_selic_risco'))
-        ),
-        
-        
-        tabPanel(
-            title = 'Ibov x Selic x Câmbio',
-            plotlyOutput(ns('ibov_selic_cambio'))
-        )
-        
-        )
-        
+
         box(
             width = 12,
             solidHeader = TRUE,
@@ -527,6 +474,88 @@ mod_analises_server <- function(input, output, session, y_selected){
         )
 
 
+    })
+    
+    
+    output$ibov_selic_risco <- renderPlotly({
+        
+        indicador <- y_selected()
+        
+        data_ibov <- data_normalized %>% 
+            group_by(year(date)) %>% 
+            summarise(media_ibov = mean(ibov))  
+        
+        data_selic <- data_normalized %>% 
+            group_by(year(date)) %>% 
+            summarise(media_selic = mean(selic)) 
+
+        data_risco <- data_normalized %>%
+            group_by(year(date)) %>%
+            summarise(media_risco = mean(risco)) 
+        
+        data_orig <- left_join(data_ibov, data_selic, by = 'year(date)') %>% 
+            mutate(media_risco = data_risco$media_risco)
+        colnames(data_orig) <- c("date",  "media_ibov", "media_selic","media_risco")
+        
+        plot_ly(data_orig, x = data_orig$media_selic, y = data_orig$media_ibov ,
+                type = 'scatter', 
+                mode = "markers",
+                color = data_orig$media_risco,
+                # type = 'scatter', mode = 'lines',
+                
+                hoverinfo = 'text',
+                text = ~paste("<b>Ibovespa:</b>",  paste(formatC(data_orig$media_ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""),
+                              "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$media_selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
+                              "\n<b>Risco País:</b>", paste(formatC(data_orig$media_risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+        ) %>%
+            layout(
+                title = '<b>Ibovespa x Taxa Selic x Risco País</b>',
+                #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
+                autosize = T,
+                xaxis = list(title = 'Taxa Selic (%)', showgrid = FALSE),
+                yaxis = list(title = 'Ibovespa')
+            )
+        
+    })
+    
+    
+    output$ibov_vix_cambio <- renderPlotly({
+        
+        data_ibov <- data_normalized %>% 
+            group_by(year(date)) %>% 
+            summarise(media_ibov = mean(ibov))  
+        
+        data_vix <- data_normalized %>% 
+            group_by(year(date)) %>% 
+            summarise(media_vix = mean(vix)) 
+        
+        data_cambio <- data_normalized %>%
+            group_by(year(date)) %>%
+            summarise(media_cambio = mean(cambio)) 
+        
+        data_orig <- left_join(data_ibov, data_vix, by = 'year(date)') %>% 
+            mutate(media_cambio = data_cambio$media_cambio)
+        colnames(data_orig) <- c("date",  "media_ibov", "media_vix","media_cambio")
+        
+        plot_ly(data_orig, x = data_orig$media_cambio, y = data_orig$media_ibov,
+                type = 'scatter', 
+                mode = "markers",
+                color = data_orig$media_vix,
+                # type = 'scatter', mode = 'lines',
+                
+                hoverinfo = 'text',
+                text = ~paste("<b>Ibovespa:</b>", paste(formatC(data_orig$media_ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""),
+                              "\n<b>VIX:</b>", paste(formatC(data_orig$media_vix, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""),
+                              "\n<b>Câmbio:</b>", paste(formatC(data_orig$media_cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
+        ) %>%
+            layout(
+                title = '<b>Ibovespa x Câmbio x VIX</b>',
+                #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
+                autosize = T,
+                xaxis = list(title = 'Câmbio (R$)', showgrid = FALSE),
+                yaxis = list(title = 'Ibovespa')
+            )
+        
     })
     
 }
