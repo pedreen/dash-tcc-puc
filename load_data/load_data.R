@@ -12,6 +12,10 @@ forecast_tree <- readRDS('bases/arvore/forecast_tree')
 # forecast random forest
 forecast_rf <- readRDS('bases/randomForest/forecast_rf')
 
+model1 <- readRDS('bases/randomForest/model_rf1')
+model2 <- readRDS('bases/randomForest/model_rf2')
+model3 <- readRDS('bases/randomForest/model_rf3')
+
 # Disp data rf
 disp_model1 <- readRDS('www/min_depth_frame1')
 disp_model2 <- readRDS('www/min_depth_frame2')

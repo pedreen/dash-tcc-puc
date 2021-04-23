@@ -61,7 +61,7 @@ modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, '
 forecast_rf <- bind_rows(modelo1, modelo2, modelo3)
 colnames(forecast_rf) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit', 'mse', 'mae', 'rmse')
 
-saveRDS(forecast_rf, 'bases/arvore/forecast_rf')
+saveRDS(forecast_rf, 'bases/randomForest/forecast_rf')
 
 
 library(randomForestExplainer)

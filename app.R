@@ -30,6 +30,7 @@ suppressMessages({
     library(randomForestExplainer)
     library(quantmod)
     library(timetk)
+    library(xgboost)
 })
 
 options(warn = -1, scipen = 999)
@@ -137,7 +138,7 @@ server <- function(input, output, session) {
                 menuSubItem("Detalhes dos Modelos", tabName = "detales_model"), 
                 menuSubItem("Árvore de Decisão", tabName = "previsao_arvore"),
                 menuSubItem("Random Forest", tabName = "previsao_rf"),
-                menuSubItem("XGBOOST", tabName = "previsao_xgboost"),
+                menuSubItem("XGBOOST", tabName = "previsao_xgboost")
                 
             ),
 

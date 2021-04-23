@@ -7,7 +7,7 @@ mod_previsoes_arvore_ui <- function(id){
     
     fluidPage(
         
-        uiOutput(ns('correlcao')), # correlação
+        #uiOutput(ns('correlcao')), # correlação
        
         fluidRow( 
         box(title = "",
@@ -46,58 +46,6 @@ mod_previsoes_arvore_server <- function(input, output, session){
     
     
     ns <- session$ns
-    
-    output$correlcao <- renderUI({
-        
-        ### Correlações
-        output$correlacao1 <- renderPlot({
-            
-            correlacao <- data_normalized %>% select(-date, -dummy_date)
-            correlacao <- cor(correlacao)
-            
-            corrplot(correlacao, type = "upper", order = "hclust", 
-                     tl.col = "black", tl.srt = 45, addCoef.col = T)
-            
-            
-            
-        })
-        
-        output$correlacao2 <- renderPlot({
-            
-            correlacao <- data_normalized %>% select(-date, -dummy_date)
-            correlacao <- cor(correlacao)
-            
-            ggcorrplot(correlacao, method = 'circle', 
-                       lab = T, lab_size = 3)
-            
-            
-        })
-        
-        ### UI 
-        
-        fluidRow(
-            tabBox(
-                title = 'Correlação',
-                width  = 12,
-                tabPanel(
-                    title = "Função cor()",
-                    #div(style = 'overflow-x: scroll',
-                    plotOutput(ns('correlacao1'))
-                    
-                ),
-                
-                tabPanel(
-                    title = "Função ggcorrplot()",
-                    #div(style = 'overflow-x: scroll',
-                    plotOutput(ns('correlacao2'))
-                    
-                )
-            )
-        )
-        
-    })
-    
-    
     
     output$decision_tree <- renderUI({
 
@@ -151,7 +99,7 @@ mod_previsoes_arvore_server <- function(input, output, session){
             add_trace(
                 x = data_fit$date, y = data_fit$predict,
                 name = 'Forecast (Fit)',
-                line = list(color = "rgb(250, 0, 0)", dash = 'dot'), 
+                line = list(color = "rgb(255, 99, 71)", dash = 'dot'), 
                 hoverinfo = 'text',
                 text = ~paste("<b>Modelo:</b>", model_num,
                               "\n<b>Data:</b>", data_fit$date,
@@ -578,57 +526,7 @@ mod_previsoes_rf_server <- function(input, output, session){
             
         })
         
-    
-    output$correlacao <- renderUI({
-        
-        ### Correlações
-        output$correlacao1 <- renderPlot({
-            
-            correlacao <- data_normalized %>% select(-date, -dummy_date)
-            correlacao <- cor(correlacao)
-            
-            corrplot(correlacao, type = "upper", order = "hclust", 
-                     tl.col = "black", tl.srt = 45, addCoef.col = T)
-            
-            
-            
-        })
-        
-        output$correlacao2 <- renderPlot({
-            
-            correlacao <- data_normalized %>% select(-date, -dummy_date)
-            correlacao <- cor(correlacao)
-            
-            ggcorrplot(correlacao, method = 'circle', 
-                       lab = T, lab_size = 3)
-            
-            
-        })
-        
-        ### UI 
-        
-        fluidRow(
-            tabBox(
-                title = 'Correlação',
-                width  = 12,
-                tabPanel(
-                    title = "Função cor()",
-                    #div(style = 'overflow-x: scroll',
-                    plotOutput(ns('correlacao1'))
-                    
-                ),
-                
-                tabPanel(
-                    title = "Função ggcorrplot()",
-                    #div(style = 'overflow-x: scroll',
-                    plotOutput(ns('correlacao2'))
-                    
-                )
-            )
-        )
-        
-    })
-    
+
     output$prediction_rf <- renderUI({
         
         
@@ -663,7 +561,7 @@ mod_previsoes_rf_server <- function(input, output, session){
                 add_trace(
                     x = data_fit$date, y = data_fit$predict,
                     name = 'Forecast (Fit)',
-                    line = list(color = "rgb(250, 0, 0)", dash = 'dot'), 
+                    line = list(color = "rgb(255, 99, 71)", dash = 'dot'), 
                     hoverinfo = 'text',
                     text = ~paste("<b>Modelo:</b>", model_num,
                                   "\n<b>Data:</b>", data_fit$date,
@@ -1024,7 +922,7 @@ mod_xgboost_server <- function(input, output, session){
     ns <- session$ns
     
     
-    output$xgboost <- renderUI{(
+    output$xgboost <- renderUI({
         
         output$erros <- renderPrint({
             
@@ -1034,8 +932,102 @@ mod_xgboost_server <- function(input, output, session){
             
         })
         
+        output$importance <- renderPrint({
+            
+            xgb.importance(model = model_xgboost)
+            
+        })
         
-    )}
+        ## Gráficos
+        
+        output$comparacao_plot <- renderPlotly({
+            
+            model_num <- 1
+            dados <- forecast_xgboost 
+            
+            data_orig <- dados$model_hist
+            data_orig <- data_orig[[1]]
+            data_orig <- data_orig[order(data_orig$date),]
+            data_fit <- dados$model_fit 
+            data_fit <- data_fit[[1]]
+            
+            plot_ly(type = 'scatter', mode = 'lines') %>% 
+                
+                add_trace(
+                    x = data_orig$date, y = data_orig$ibov,
+                    name = 'Dado Histórico (Hist.)',
+                    line = list(color = "rgb(47, 73, 139)"),
+                    hoverinfo = 'text',
+                    text = ~paste("<b>Modelo:</b>", model_num,
+                                  "\n<b>Data:</b>", data_orig$date,
+                                  "\n<b>Ibovespa (hist.):</b>", paste(formatC(data_orig$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+                ) %>%
+                
+                
+                
+                add_trace(
+                    x = data_fit$date, y = data_fit$predict,
+                    name = 'Forecast (Fit)',
+                    line = list(color = "rgb(255, 99, 71)", dash = 'dot'), 
+                    hoverinfo = 'text',
+                    text = ~paste("<b>Modelo:</b>", model_num,
+                                  "\n<b>Data:</b>", data_fit$date,
+                                  "\n<b>Ibovespa (fit):</b>", paste(formatC(data_fit$predict, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+                    
+                ) %>% 
+                layout(
+                    title = '<b>Ibovespa (Hist. vs Fit) </b>',
+                    legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
+                    autosize = T, 
+                    xaxis = list(title = '', showgrid = FALSE),
+                    yaxis = list(title = '')
+                ) 
+            
+        })
+        
+        
+        
+        ## UI 
+        
+        fluidRow(
+            
+            # box(title = "",
+            #     width = 6,
+            #     solidHeader = TRUE,
+            #     column(4,
+            #            selectInput(
+            #                inputId = ns('model'),
+            #                label = 'Selecione o modelo:',
+            #                choices = c(1),
+            #                selected = 1
+            #                
+            #            )
+            #     )
+            # ),
+            
+            box(title = "",
+                width = 6,
+                solidHeader = TRUE,
+                h4("<b>Tabela de erros</b>"),
+                verbatimTextOutput(ns('erros'))
+            ),
+            
+            box(title = "",
+                width = 6,
+                solidHeader = TRUE,
+                h4("<b>Tabela de Importância</b>"),
+                verbatimTextOutput(ns('importance'))
+            ),
+       
+            box(title = "",
+                width = 12,
+                solidHeader = TRUE,
+                plotlyOutput(ns('comparacao_plot'))
+            )
+        )
+        
+        
+    })
     
 }
 
@@ -1047,10 +1039,8 @@ mod_detalhes_modelos_ui <- function(id){
     
     fluidPage(
         
-        uiOutput(ns('detalhes')) # tipo de modelo
-        # uiOutput(ns('visualizacoes')), # gráfico com histórico + projeção (original e ajustada)
-        # uiOutput(ns('ajustes')) # tabela original e ajustável + botões 
-        
+        uiOutput(ns('correlacao')), # tipo de modelo
+        reactableOutput(ns('table_indicadores'))
     )
     
 }
@@ -1061,6 +1051,84 @@ mod_detalhes_modelos_server <- function(input, output, session){
     
     
     ns <- session$ns
+    
+    
+    output$table_indicadores <- renderReactable({
+        
+        
+        forecast_total <- bind_rows(forecast_tree, forecast_rf, forecast_xgboost) %>% 
+            mutate(y = 'IBOV')
+        
+        data_orig <- forecast_total %>%
+            select(y, numero_modelo, tipo_modelo, mse, mae,rmse) 
+        
+        colnames(data_orig) <- c('Y', 'N° Modelo', 'Tipo Modelo', 'MSE', 'MAE', 'RMSE')
+        
+        
+        reactable::reactable(data_orig,
+                                    pagination = FALSE,
+                                    highlight = TRUE,
+                                    height = 400,
+                                    sortable = TRUE,
+                                    borderless = TRUE,
+                                    defaultPageSize = nrow(data_orig)
+                                    # defaultSortOrder = "desc",
+                                    # defaultSorted = "Confirmed",
+                                    
+        )
+        
+    })
+    
+    
+    output$correlacao <- renderUI({
+        
+        ### Correlações
+        output$correlacao1 <- renderPlot({
+            
+            correlacao <- data_normalized %>% select(-date, -dummy_date)
+            correlacao <- cor(correlacao)
+            
+            corrplot(correlacao, type = "upper", order = "hclust", 
+                     tl.col = "black", tl.srt = 45, addCoef.col = T)
+            
+            
+            
+        })
+        
+        output$correlacao2 <- renderPlot({
+            
+            correlacao <- data_normalized %>% select(-date, -dummy_date)
+            correlacao <- cor(correlacao)
+            
+            ggcorrplot(correlacao, method = 'circle', 
+                       lab = T, lab_size = 3)
+            
+            
+        })
+        
+        ### UI 
+        
+        fluidRow(
+            tabBox(
+                title = 'Correlação',
+                width  = 12,
+                tabPanel(
+                    title = "Função cor()",
+                    #div(style = 'overflow-x: scroll',
+                    plotOutput(ns('correlacao1'))
+                    
+                ),
+                
+                tabPanel(
+                    title = "Função ggcorrplot()",
+                    #div(style = 'overflow-x: scroll',
+                    plotOutput(ns('correlacao2'))
+                    
+                )
+            )
+        )
+        
+    })
     
     
 }
