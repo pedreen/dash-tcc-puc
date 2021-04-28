@@ -153,7 +153,7 @@ mod_xgboost_server <- function(input, output, session){
         forecast_anual <- forecast %>% 
             mutate(ano = year(date)) %>% 
             group_by(ano) %>% 
-            summarise(nivel_anual = sum(ibov, na.rm = TRUE)) %>% 
+            summarise(nivel_anual = mean(ibov, na.rm = TRUE)) %>% 
             ungroup() %>% 
             mutate(taxa_anual = nivel_anual/lag(nivel_anual) - 1) %>% 
             mutate_at(vars(taxa_anual), ~ round(.*100, 2)) %>% # passa p/ porcentagem
@@ -200,7 +200,7 @@ mod_xgboost_server <- function(input, output, session){
         forecast_anual <- forecast %>% 
             mutate(ano = year(date)) %>% 
             group_by(ano) %>% 
-            summarise(nivel_anual = sum(predict, na.rm = TRUE)) %>% 
+            summarise(nivel_anual = mean(predict, na.rm = TRUE)) %>% 
             ungroup() %>% 
             mutate(taxa_anual = nivel_anual/lag(nivel_anual) - 1) %>% 
             mutate_at(vars(taxa_anual), ~ round(.*100, 2)) %>% # passa p/ porcentagem

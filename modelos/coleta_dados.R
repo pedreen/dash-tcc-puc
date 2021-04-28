@@ -1,6 +1,6 @@
 ############### Coleta de dados financeiros ############### 
 
-data_coleta <- '2021-04-19' # Variável para ser atualizada para rodar a coleta na data certa
+data_coleta <- '2021-04-30' # Variável para ser atualizada para rodar a coleta na data certa
 
 library(BETS)
 library(quantmod)
@@ -25,13 +25,6 @@ getSymbols('^BVSP')
 ibov_series <- tk_tbl(BVSP, preserve_index = T, rename_index = 'date')
 #saveRDS(ibov_series, 'www/indicadores/ibov_series')
 
-# plot_ly(ibov_series, x = ~date, y = ~BVSP.Adjusted, type = 'scatter', mode = 'line') %>% 
-#     layout(
-#         title = "Índice BOVESPA - SP Ajustado",
-#         xaxis = list(title = "Data" ,showgrid = FALSE ),
-#         yaxis = list(title = "BVSP Ajustado")
-#     )
-
 # Taxa de câmbio
 getSymbols('BRL=X', src = 'yahoo')
 cambio_yahoo = tk_tbl(`BRL=X`, preserve_index = T, rename_index = 'date') 
@@ -43,14 +36,6 @@ VIXCLS <- tk_tbl(VIXCLS, preserve_index = T, rename_index = 'date')
 #saveRDS(VIXCLS, 'www/indicadores/VIXCLS')
 
 #### 2008 foi a crise causada pela crise imobiliária dos EUA
-
-# plot_ly(VIXCLS, x = ~date, y = ~VIXCLS, type = 'scatter', mode = 'line') %>% 
-#     layout(
-#         title = "Índice de Volatilidade - FRED",
-#         xaxis = list(title = "Data" ,showgrid = FALSE ),
-#         yaxis = list(title = "Índice de Volatilidade (%)")
-#     )
-
 
 #### Pegando dados do site https://quandl.com
 api_key = '9txRuYjAikVs9s8wTX2n' ## Foi necessário criar uma conta para usar os dados do site como estudante e usar a API para o site não te bloquear
@@ -77,8 +62,8 @@ cambio_bcb <- BETSget(1, from = '1999-06-01')
 # O número 1178 representa o código da taxa Selic no site do Banco Central
 selic_bcb <- BETSget(1178, from = '1999-06-01')
 #saveRDS(selic_bcb, 'www/indicadores/selic_bcb')
-## Pegando dados do IPEADATA
 
+## Pegando dados do IPEADATA
 ## Para pega a série usando esse pacote é um pouco mais complicado, é necessário entrar no site http://www.ipeadata.gov.br/Default.aspx
 # e quando selecionar o índice EMBI utiliza-se o inspect do navegador pra pegar o número do índice de EMBI no HTML da página
 
@@ -87,9 +72,9 @@ colnames(risco_pais) <- c('date', 'risco')
 #saveRDS(risco_pais, 'www/indicadores/risco_pais')
 
 ### Pegando a inflação do dolar
-inflacao_dolar <- Quandl('RATEINF/INFLATION_USA',  type ='xts', order = 'asc')
-inflacao_dolar <- tk_tbl(inflacao_dolar, preserve_index = T, rename_index = 'date')
-colnames(inflacao_dolar) <- c('date', 'inflation_yoy_usa')
+# inflacao_dolar <- Quandl('RATEINF/INFLATION_USA',  type ='xts', order = 'asc')
+# inflacao_dolar <- tk_tbl(inflacao_dolar, preserve_index = T, rename_index = 'date')
+# colnames(inflacao_dolar) <- c('date', 'inflation_yoy_usa')
 
 
 # # pegando o PIB per capta do brazil

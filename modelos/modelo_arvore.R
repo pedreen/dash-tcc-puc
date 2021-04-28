@@ -53,7 +53,8 @@ mse_tree = mean((test$ibov - test$ibov_predict)^2)
 mae_tree = caret::MAE(test$ibov, test$ibov_predict)
 rmse_tree = caret::RMSE(test$ibov, test$ibov_predict)
 
-modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
+modelo1 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino,
+                      'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
 
 # Model 2
 
@@ -76,7 +77,8 @@ mse_tree = mean((test$ibov - test$ibov_predict)^2)
 mae_tree = caret::MAE(test$ibov, test$ibov_predict)
 rmse_tree = caret::RMSE(test$ibov, test$ibov_predict)
 
-modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
+modelo2 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino,
+                      'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
 
 # Model 3
 # Realizando previsões
@@ -97,18 +99,11 @@ mse_tree = mean((test$ibov - test$ibov_predict)^2)
 mae_tree = caret::MAE(test$ibov, test$ibov_predict)
 rmse_tree = caret::RMSE(test$ibov, test$ibov_predict)
 
-modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino, 'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
+modelo3 <- data.frame('tipo_modelo' = model_type, 'numero_modelo' = model_num, 'model_hist' = treino,
+                      'model_fit' = teste, 'mse' = mse_tree, 'mae' = mae_tree, 'rmse' = rmse_tree) 
 
 forecast_tree <- bind_rows(modelo1, modelo2, modelo3)
 colnames(forecast_tree) <- c('tipo_modelo', 'numero_modelo', 'model_hist', 'model_fit', 'mse', 'mae', 'rmse')
 
 saveRDS(forecast_tree, 'bases/arvore/forecast_tree')
 
-
-
-# XGBoost
-
-# put our testing & training data into two seperates Dmatrixs objects
-
-dtrain <- xgboost(data = train, label= train_labels)
-dtest <- xgb.DMatrix(data = test_data, label= test_labels)

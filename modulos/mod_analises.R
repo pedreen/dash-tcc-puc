@@ -558,4 +558,6 @@ mod_analises_server <- function(input, output, session, y_selected){
         
     })
     
+    
+
 }

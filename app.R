@@ -17,12 +17,11 @@ suppressMessages({
     library(forecast)
     library(glmnet)
     library(caret)
-    library(DT) 
-    library(ForecastComb) 
+    #library(DT) 
+    #library(ForecastComb) 
     library(waiter)
-    library(formattable)
+    #library(formattable)
     library(randomForest)
-    library(shinycssloaders) # Lib para spinners
     library(reactable)
     library(ggcorrplot)
     library(corrplot)
@@ -117,7 +116,7 @@ server <- function(input, output, session) {
             # Análises
             menuItem(
                 "Análise Exploratória", icon = icon("chart-line"), #startExpanded = TRUE, 
-                menuSubItem('Comparação de indicadores', tabName = "analises")
+                menuSubItem('Análise dos indicadores', tabName = "analises")
                 
             ),
             
