@@ -16,6 +16,7 @@ suppressMessages({
     library(shinyBS)
     library(forecast)
     library(glmnet)
+    library(recipes)
     library(caret)
     #library(DT) 
     #library(ForecastComb) 
@@ -52,7 +53,7 @@ sidebar <- dashboardSidebar(
     
     use_waiter(),
     
-    show_waiter_on_load(
+    waiter::waiter_show_on_load(
         logo = 'PUCMINAS.png', 
         tagList(
             spin_fading_circles(), 
