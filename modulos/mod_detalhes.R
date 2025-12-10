@@ -32,7 +32,7 @@ mod_detalhes_modelos_server <- function(input, output, session){
             mutate(mae = mae %>% round(digits = 2) %>% format(big.mark = '.', small.mark = ',')) %>% 
             mutate(rmse = rmse %>% round(digits = 2) %>% format(big.mark = '.', small.mark = ','))
         
-        colnames(data_orig) <- c('Y', 'N° Modelo', 'Tipo Modelo', 'MSE', 'MAE', 'RMSE')
+        colnames(data_orig) <- c('Y', 'Model No.', 'Model Type', 'MSE', 'MAE', 'RMSE')
         
         
         
@@ -85,17 +85,17 @@ mod_detalhes_modelos_server <- function(input, output, session){
         
         fluidRow(
             tabBox(
-                title = 'Correlação',
+                title = 'Correlation',
                 width  = 12,
                 tabPanel(
-                    title = "Função cor()",
+                    title = "cor() function",
                     #div(style = 'overflow-x: scroll',
                     plotOutput(ns('correlacao1'))
                     
                 ),
                 
                 tabPanel(
-                    title = "Função ggcorrplot()",
+                    title = "ggcorrplot() function",
                     #div(style = 'overflow-x: scroll',
                     plotOutput(ns('correlacao2'))
                     

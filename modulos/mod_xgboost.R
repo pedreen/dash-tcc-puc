@@ -1,4 +1,4 @@
-# XGBOOST
+# XGBoost
 
 mod_xgboost_ui <- function(id){
     
@@ -6,7 +6,7 @@ mod_xgboost_ui <- function(id){
     
     fluidPage(
         
-        uiOutput(ns('xgboost')), # visualizações do módulo ,
+        uiOutput(ns('xgboost')), # module visualizations
         
         fluidRow(
             box(title = "",
@@ -38,7 +38,7 @@ mod_xgboost_server <- function(input, output, session){
     
     output$xgboost <- renderUI({
         
-        output$erros <- renderPrint({
+            output$erros <- renderPrint({
             
             data <- forecast_xgboost
             
@@ -46,7 +46,7 @@ mod_xgboost_server <- function(input, output, session){
             
         })
         
-        output$importance <- renderPrint({
+            output$importance <- renderPrint({
             
             xgb.importance(model = model_xgboost)
             
@@ -69,11 +69,11 @@ mod_xgboost_server <- function(input, output, session){
                 
                 add_trace(
                     x = data_orig$date, y = data_orig$ibov,
-                    name = 'Dado Histórico (Hist.)',
+                    name = 'Historical Data (Hist.)',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Modelo:</b>", model_num,
-                                  "\n<b>Data:</b>", data_orig$date,
+                    text = ~paste("<b>Model:</b>", model_num,
+                                  "\n<b>Date:</b>", data_orig$date,
                                   "\n<b>Ibovespa (hist.):</b>", paste(formatC(data_orig$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
                 ) %>%
                 
@@ -84,13 +84,13 @@ mod_xgboost_server <- function(input, output, session){
                     name = 'Forecast (Fit)',
                     line = list(color = "rgb(178,34,34)", dash = 'dot'), 
                     hoverinfo = 'text',
-                    text = ~paste("<b>Modelo:</b>", model_num,
-                                  "\n<b>Data:</b>", data_fit$date,
+                    text = ~paste("<b>Model:</b>", model_num,
+                                  "\n<b>Date:</b>", data_fit$date,
                                   "\n<b>Ibovespa (fit):</b>", paste(formatC(data_fit$predict, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
                     
                 ) %>% 
                 layout(
-                    title = '<b>Ibovespa (Hist. vs Fit) </b>',
+                            title = '<b>Ibovespa (Hist. vs Fit) </b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -109,7 +109,7 @@ mod_xgboost_server <- function(input, output, session){
             #     column(4,
             #            selectInput(
             #                inputId = ns('model'),
-            #                label = 'Selecione o modelo:',
+            #                label = 'Select model:',
             #                choices = c(1),
             #                selected = 1
             #                
@@ -117,13 +117,13 @@ mod_xgboost_server <- function(input, output, session){
             #     )
             # ),
             
-            box(title = "Erros do modelo",
+            box(title = "Model errors",
                 width = 6,
                 solidHeader = TRUE,
                 verbatimTextOutput(ns('erros'))
             ),
             
-            box(title = "Tabela de Importância",
+            box(title = "Importance table",
                 width = 6,
                 solidHeader = TRUE,
                 verbatimTextOutput(ns('importance'))
@@ -167,7 +167,7 @@ mod_xgboost_server <- function(input, output, session){
             add_trace(data = forecast_anual,
                       x = ~as.character(ano),
                       y = ~nivel_anual, 
-                      type = 'bar', name = "Nível", 
+                      type = 'bar', name = "Level", 
                       text = forecast_anual$nivel_anual %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","), textposition = 'auto'
             ) %>% 
             
@@ -180,11 +180,11 @@ mod_xgboost_server <- function(input, output, session){
                       legendgroup = "yoy", name = paste("YoY", "(%)"), yaxis = 'y2') %>% 
             
             
-            layout(title = '<b>Dados Históricos</b>',
+                layout(title = '<b>Historical Data</b>',
                    legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.35), 
                    xaxis = list(title = ''),
-                   yaxis = list(title = 'Nível YoY'),
-                   yaxis2 = list(title = 'Variação YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
+                   yaxis = list(title = 'YoY Level'),
+                   yaxis2 = list(title = 'YoY Change', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
                    margin = list(l = 20, r = 60))
         
     })
@@ -214,7 +214,7 @@ mod_xgboost_server <- function(input, output, session){
             add_trace(data = forecast_anual,
                       x = ~as.character(ano),
                       y = ~nivel_anual, 
-                      type = 'bar', name = "Nível", 
+                      type = 'bar', name = "Level", 
                       text = forecast_anual$nivel_anual %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","), textposition = 'auto'
             ) %>% 
             
@@ -227,11 +227,11 @@ mod_xgboost_server <- function(input, output, session){
                       legendgroup = "yoy", name = paste("YoY", "(%)"), yaxis = 'y2') %>% 
             
             
-            layout(title = '<b>Dados Forecast</b>',
+            layout(title = '<b>Forecast Data</b>',
                    legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.35), 
                    xaxis = list(title = ''),
-                   yaxis = list(title = 'Nível YoY'),
-                   yaxis2 = list(title = 'Variação YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
+                   yaxis = list(title = 'Level YoY'),
+                   yaxis2 = list(title = 'Variation YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
                    margin = list(l = 20, r = 60))
         
     })

@@ -1,5 +1,5 @@
 
-# Carregando indicadores
+# Loading indicators
 # files.sources_y <-  list.files('www/indicadores/', full.names = TRUE)
 # sapply(c(files.sources_y), source)
 data_normalized <- readRDS('www/data_normalized')
@@ -33,7 +33,7 @@ erro_tree3 <- readRDS('bases/arvore/error_model_3')
 forecast_xgboost <- readRDS('bases/xgboost/xgboost_model')
 model_xgboost <- readRDS('bases/xgboost/xgbc')
 
-indicadores_list <- c('Ibovespa' = "ibov", 'Taxa de Câmbio' = "cambio", 'Vix' = "vix", 'Ouro' = "gold_usd", 'Taxa Selic' = "selic", 'Risco País' = "risco", 'Bitcoin' = "bitcoin_usd")
+indicadores_list <- c('Ibovespa' = "ibov", 'Exchange Rate' = "cambio", 'VIX' = "vix", 'Gold' = "gold_usd", 'Selic Rate' = "selic", 'Country Risk' = "risco", 'Bitcoin' = "bitcoin_usd")
 
 # Carregando módulos
 files.sources_modules <-  list.files('modulos/', full.names = TRUE)

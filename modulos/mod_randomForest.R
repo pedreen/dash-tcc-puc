@@ -18,7 +18,7 @@ mod_previsoes_rf_ui <- function(id){
                 column(4,
                        selectInput(
                            inputId = ns('model'),
-                           label = 'Selecione o modelo:',
+                           label = 'Select model:',
                            choices = c(1,2,3),
                            selected = 1
                            
@@ -26,7 +26,7 @@ mod_previsoes_rf_ui <- function(id){
                 )
             ),
             
-            box(title = "Erros do modelo", 
+            box(title = "Model errors", 
                 width = 8, 
                 solidHeader = T, 
                 verbatimTextOutput(ns("info"))
@@ -37,13 +37,13 @@ mod_previsoes_rf_ui <- function(id){
         
         fluidRow(
             
-            box(title = "Importância das variáveis explicativas (Tabela)", 
+            box(title = "Explanatory variable importance (Table)", 
                 width = 12,
                 solidHeader = T, 
                 reactableOutput(ns("var_imp"))
             ), 
             
-            box(title = "Importância das variáveis explicativas (Gráfico)", 
+            box(title = "Explanatory variable importance (Chart)", 
                 width = 12, 
                 solidHeader = T, 
                 plotOutput(ns("var_imp_chart"))
@@ -205,11 +205,11 @@ mod_previsoes_rf_server <- function(input, output, session){
                 
                 add_trace(
                     x = data_orig$date, y = data_orig$ibov,
-                    name = 'Dado Histórico (Hist.)',
+                    name = 'Historical Data (Hist.)',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Modelo:</b>", model_num,
-                                  "\n<b>Data:</b>", data_orig$date,
+                    text = ~paste("<b>Model:</b>", model_num,
+                                  "\n<b>Date:</b>", data_orig$date,
                                   "\n<b>Ibovespa (hist.):</b>", paste(formatC(data_orig$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
                 ) %>%
                 
@@ -220,8 +220,8 @@ mod_previsoes_rf_server <- function(input, output, session){
                     name = 'Forecast (Fit)',
                     line = list(color = "rgb(178,34,34)", dash = 'dot'), 
                     hoverinfo = 'text',
-                    text = ~paste("<b>Modelo:</b>", model_num,
-                                  "\n<b>Data:</b>", data_fit$date,
+                    text = ~paste("<b>Model:</b>", model_num,
+                                  "\n<b>Date:</b>", data_fit$date,
                                   "\n<b>Ibovespa (fit):</b>", paste(formatC(data_fit$predict, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
                     
                 ) %>% 
@@ -278,13 +278,13 @@ mod_previsoes_rf_server <- function(input, output, session){
                     type = 'bar', 
                     
                     hoverinfo = 'text',
-                    text = ~paste("<b>Modelo:</b>", model_num,
-                                  "\n<b>Data:</b>", data_ano_orig$ano,
+                    text = ~paste("<b>Model:</b>", model_num,
+                                  "\n<b>Date:</b>", data_ano_orig$ano,
                                   "\n<b>Ibovespa:</b>", paste(formatC(data_ano_orig$total, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 
                 layout(
-                    title = '<b>Índice Ibovespa - YoY (Hist.)</b>',
+                    title = '<b>Ibovespa Index - YoY (Hist.)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -315,12 +315,12 @@ mod_previsoes_rf_server <- function(input, output, session){
                     x = data_ano_fit$ano, y = data_ano_fit$total,
                     
                     hoverinfo = 'text',
-                    text = ~paste("<b>Modelo:</b>", model_num,
-                                  "\n<b>Data:</b>", data_ano_fit$ano,
+                    text = ~paste("<b>Model:</b>", model_num,
+                                  "\n<b>Date:</b>", data_ano_fit$ano,
                                   "\n<b>Ibovespa:</b>", paste(formatC(data_ano_fit$total, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 layout(
-                    title = '<b>Índice Ibovespa - YoY (Fit)</b>',
+                    title = '<b>Ibovespa Index - YoY (Fit)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -356,7 +356,7 @@ mod_previsoes_rf_server <- function(input, output, session){
                 add_trace(data = forecast_anual,
                           x = ~as.character(ano),
                           y = ~nivel_anual, 
-                          type = 'bar', name = "Nível", 
+                          type = 'bar', name = "Level", 
                           text = forecast_anual$nivel_anual %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","), textposition = 'auto'
                 ) %>% 
                 
@@ -369,11 +369,11 @@ mod_previsoes_rf_server <- function(input, output, session){
                           legendgroup = "yoy", name = paste("YoY", "(%)"), yaxis = 'y2') %>% 
                 
                 
-                layout(title = '<b>Dados Históricos</b>',
+                layout(title = '<b>Historical Data</b>',
                        legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.35), 
                        xaxis = list(title = ''),
-                       yaxis = list(title = 'Nível YoY'),
-                       yaxis2 = list(title = 'Variação YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
+                       yaxis = list(title = 'Level YoY'),
+                       yaxis2 = list(title = 'Variation YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
                        margin = list(l = 20, r = 60))
             
         })
@@ -405,7 +405,7 @@ mod_previsoes_rf_server <- function(input, output, session){
                 add_trace(data = forecast_anual,
                           x = ~as.character(ano),
                           y = ~nivel_anual, 
-                          type = 'bar', name = "Nível", 
+                          type = 'bar', name = "Level", 
                           text = forecast_anual$nivel_anual %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","), textposition = 'auto'
                 ) %>% 
                 
@@ -418,11 +418,11 @@ mod_previsoes_rf_server <- function(input, output, session){
                           legendgroup = "yoy", name = paste("YoY", "(%)"), yaxis = 'y2') %>% 
                 
                 
-                layout(title = '<b>Dados Forecast</b>',
+                layout(title = '<b>Forecast Data</b>',
                        legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.35), 
                        xaxis = list(title = ''),
-                       yaxis = list(title = 'Nível YoY'),
-                       yaxis2 = list(title = 'Variação YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
+                       yaxis = list(title = 'Level YoY'),
+                       yaxis2 = list(title = 'Variation YoY', ticksuffix = "%", side = 'right', overlaying = "y", zeroline = F, showgrid = F),
                        margin = list(l = 20, r = 60))
             
         })

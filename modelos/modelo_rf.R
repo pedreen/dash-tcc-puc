@@ -120,8 +120,8 @@ plot_ly(type = 'scatter', mode = 'lines') %>%
     #     name = 'Hist.',
     #     line = list(color = "rgb(47, 73, 139)"),
     #     hoverinfo = 'text',
-    #     text = ~paste("<b>Modelo:</b>", model_num,
-    #                   "\n<b>Data:</b>", data_predict$date,
+    #     text = ~paste("<b>Model:</b>", model_num,
+    #                   "\n<b>Date:</b>", data_predict$date,
     #                   "\n<b>Ibovespa (hist.):</b>", paste(formatC(data_predict$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
     # ) %>%
     
@@ -131,9 +131,9 @@ plot_ly(type = 'scatter', mode = 'lines') %>%
         name = 'Fit',
         line = list(color = "rgb(250, 0, 0)", dash = 'dot'), 
         hoverinfo = 'text',
-        text = ~paste("<b>Modelo:</b>", model_num,
-                      "\n<b>Data:</b>", test$date,
-                      "\n<b>Ibovespa (fit):</b>", paste(formatC(forest[["predicted"]], digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+        text = ~paste("<b>Model:</b>", model_num,
+                  "\n<b>Date:</b>", test$date,
+                  "\n<b>Ibovespa (fit):</b>", paste(formatC(forest[["predicted"]], digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
         
     ) %>% 
     layout(
@@ -221,9 +221,9 @@ plot_ly(type = 'scatter', mode = 'lines') %>%
         name = 'Hist.',
         line = list(color = "rgb(47, 73, 139)"),
         hoverinfo = 'text',
-        text = ~paste("<b>Modelo:</b>", model_num,
-                      "\n<b>Data:</b>", data_predict$date,
-                      "\n<b>Ibovespa (hist.):</b>", paste(formatC(data_predict$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+        text = ~paste("<b>Model:</b>", model_num,
+                  "\n<b>Date:</b>", data_predict$date,
+                  "\n<b>Ibovespa (hist.):</b>", paste(formatC(data_predict$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
     ) %>%
     
     
@@ -233,9 +233,9 @@ plot_ly(type = 'scatter', mode = 'lines') %>%
         name = 'Fit',
         line = list(color = "rgb(250, 0, 0)", dash = 'dot'), 
         hoverinfo = 'text',
-        text = ~paste("<b>Modelo:</b>", model_num,
-                      "\n<b>Data:</b>", data_predict$date,
-                      "\n<b>Ibovespa (fit):</b>", paste(formatC(data_predict$prdict_forest, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+        text = ~paste("<b>Model:</b>", model_num,
+                  "\n<b>Date:</b>", data_predict$date,
+                  "\n<b>Ibovespa (fit):</b>", paste(formatC(data_predict$prdict_forest, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
         
     ) %>% 
     layout(

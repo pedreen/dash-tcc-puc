@@ -114,10 +114,10 @@ server <- function(input, output, session) {
             #     options = list(`live-search` = TRUE, `actions-box` = TRUE)
             # ),
             
-            # Análises
+            # Analyses
             menuItem(
-                "Análise Exploratória", icon = icon("chart-line"), #startExpanded = TRUE, 
-                menuSubItem('Análise dos indicadores', tabName = "analises")
+                "Exploratory Analysis", icon = icon("chart-line"), #startExpanded = TRUE, 
+                menuSubItem('Indicator Analysis', tabName = "analises")
                 
             ),
             
@@ -133,12 +133,12 @@ server <- function(input, output, session) {
             
             # Simulador + Ajuste Manual
             menuItem(
-                'Explorando os modelos', #icon = icon('fas fa-medal'),
+                'Exploring Models', #icon = icon('fas fa-medal'),
                 
-                menuSubItem("Detalhes dos Modelos", tabName = "detales_model"), 
-                menuSubItem("Árvore de Decisão", tabName = "previsao_arvore"),
+                menuSubItem("Model Details", tabName = "detales_model"), 
+                menuSubItem("Decision Tree", tabName = "previsao_arvore"),
                 menuSubItem("Random Forest", tabName = "previsao_rf"),
-                menuSubItem("XGBOOST", tabName = "previsao_xgboost")
+                menuSubItem("XGBoost", tabName = "previsao_xgboost")
                 
             ),
 
@@ -148,7 +148,7 @@ server <- function(input, output, session) {
             
             tags$style(".at_dash{position:absolute;bottom:0px; margin:5px}"),
             div(class='at_dash',
-                span("Dados gerados em:", atualization_date_input)
+                span("Data generated on:", atualization_date_input)
             )
             
         )

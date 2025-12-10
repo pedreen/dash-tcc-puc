@@ -1,5 +1,5 @@
 ---
-title: "Tutorial Dashboard - Indicadores Econômicos"
+title: "Dashboard Tutorial - Economic Indicators"
 output: html_document
 ---
 
@@ -37,33 +37,33 @@ h1.title {
 
 ```
 
-## <span class = "title1">Indicados Econômicos</span>
+## <span class = "title1">Economic Indicators</span>
 
 ```{r, echo = FALSE}
-shiny::div(shiny::HTML(paste(shiny::icon("chevron-right"), "Análises Descritivas")), id = "subtitle")
+shiny::div(shiny::HTML(paste(shiny::icon("chevron-right"), "Descriptive Analyses")), id = "subtitle")
 ```
 
-Módulo apresenta dados dos indicadores na forma de tabelas, gráficos e possibilita a comparação de indicadores.
+This module presents indicator data in tables and charts and allows comparison between indicators.
 
-Indicadores:
+Indicators:
 
 * Ibovespa
-* Taxa de Câmbio
+* Exchange Rate
 * VIX
-* Taxa Selic
-* Risco País
-* Ouro
+* Selic Rate
+* Country Risk
+* Gold
 * Bitcoin
 
 
 
 
-## <span class = "title1">Explorando Modelos</span>
+## <span class = "title1">Exploring Models</span>
 
-Nesta aba conseguimos explorar as projeções realizadas através de duas estratégias, que são:
+In this tab you can explore projections made using two strategies:
 
 * ARIMA
-* Árvore de Decisão
+* Decision Tree
 
 
 

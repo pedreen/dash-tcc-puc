@@ -27,7 +27,7 @@ train <- data_normalized[linhas,]
 # Dados de teste 30%
 test <- data_normalized[-linhas,]
 
-# Arvode de Decisão
+# Decision Tree
 
 library(rpart)
 modelo <- rpart(ibov ~ .,data = train, control = rpart.control(cp=0))
@@ -46,7 +46,7 @@ erros_predict
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>% select(date, predict) %>% nest()
 model_num <- 1
-model_type <- 'Árvore de Decisão'
+model_type <- 'Decision Tree'
 error_model_1 <- erros_predict
 saveRDS(error_model_1, 'bases/arvore/error_model_1')
 mse_tree = mean((test$ibov - test$ibov_predict)^2)
@@ -70,7 +70,7 @@ erros_predict
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>% select(date, predict) %>% nest()
 model_num <- 2
-model_type <- 'Árvore de Decisão'
+model_type <- 'Decision Tree'
 error_model_2 <- erros_predict
 saveRDS(error_model_2, 'bases/arvore/error_model_2')
 mse_tree = mean((test$ibov - test$ibov_predict)^2)
@@ -92,7 +92,7 @@ erros_predict
 treino <- train %>% select(date, ibov) %>% nest()
 teste <- test %>% select(date, predict) %>% nest()
 model_num <- 3
-model_type <- 'Árvore de Decisão'
+model_type <- 'Decision Tree'
 error_model_3 <- erros_predict
 saveRDS(error_model_3, 'bases/arvore/error_model_3')
 mse_tree = mean((test$ibov - test$ibov_predict)^2)

@@ -16,13 +16,13 @@ mod_analises_ui <- function(id){
         tabBox(
             width  = 12,
             tabPanel(
-                title = 'Ibov x Selic x Risco País',
+                title = 'Ibov x Selic x Country Risk',
                 plotlyOutput(ns('ibov_selic_risco'))
             ),
             
             
             tabPanel(
-                title = 'Ibov x Câmbio x VIX',
+                title = 'Ibov x Exchange Rate x VIX',
                 plotlyOutput(ns('ibov_vix_cambio'))
             )
             
@@ -55,7 +55,7 @@ mod_analises_server <- function(input, output, session, y_selected){
         output$info2 <- renderValueBox({
             value2 <- data_normalized$cambio %>% round(2) %>% last() %>% format(big.mark = ".") 
             valueBox(
-                "Câmbio",
+                "Exchange Rate",
                 color = 'orange',
                 paste("R$ ",value2),
                 icon = icon("hand-holding-usd")
@@ -78,7 +78,7 @@ mod_analises_server <- function(input, output, session, y_selected){
         output$info4 <- renderValueBox({
             value4 <- data_normalized$selic %>% round(2)  %>% last() %>% format(big.mark = ".") 
             valueBox(
-                "Selic",
+                "Selic Rate",
                 paste(value4, "%"),
                 icon = icon("percentage")
             )
@@ -88,7 +88,7 @@ mod_analises_server <- function(input, output, session, y_selected){
         output$info5 <- renderValueBox({
             value5 <- data_normalized$risco  %>% last() %>% format(big.mark = ".") 
             valueBox(
-                "Risco País",
+                "Country Risk",
                 color = 'red',
                 value5,
                 icon = icon("users")
@@ -99,7 +99,7 @@ mod_analises_server <- function(input, output, session, y_selected){
         output$info6 <- renderValueBox({
             value6 <- data_normalized$gold_usd  %>% last() %>% format(big.mark = ".") 
             valueBox(
-                "Ouro",
+                "Gold",
                 color = 'orange',
                 paste("$ ",value6),
                 icon = icon("hand-holding-usd")
@@ -121,7 +121,7 @@ mod_analises_server <- function(input, output, session, y_selected){
         
         ### UI
         
-        box(title = "Dados dos indicadores",
+        box(title = "Indicator data",
             width = 12,
             solidHeader = TRUE,
             
@@ -162,7 +162,7 @@ mod_analises_server <- function(input, output, session, y_selected){
                                       "\n<b>Ibovespa:</b>", paste(formatC(data_orig$ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
                     ) %>%
                         layout(
-                            title = '<b>Índice Ibovespa</b>',
+                            title = '<b>Ibovespa Index</b>',
                             legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                             autosize = T, 
                             xaxis = list(title = '', showgrid = FALSE),
@@ -179,11 +179,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                     type = 'scatter', mode = 'lines',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Data:</b>", data_orig$date,
-                                  "\n<b>Taxa de Câmbio:</b>", paste(formatC(data_orig$cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
+                    text = ~paste("<b>Date:</b>", data_orig$date,
+                                  "\n<b>Exchange Rate:</b>", paste(formatC(data_orig$cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
             ) %>%
                 layout(
-                    title = '<b>Taxa de Câmbio (R$)</b>',
+                    title = '<b>Exchange Rate (R$)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -205,7 +205,7 @@ mod_analises_server <- function(input, output, session, y_selected){
                                   "\n<b>VIX:</b>", paste(formatC(data_orig$vix, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 layout(
-                    title = '<b>Índice CBOE (Chicago Board Options Exchange)</b>',
+                    title = '<b>CBOE Index (Chicago Board Options Exchange)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -224,11 +224,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                     type = 'scatter', mode = 'lines',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Data:</b>", data_orig$date,
-                                  "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"))
+                    text = ~paste("<b>Date:</b>", data_orig$date,
+                                  "\n<b>Selic Rate:</b>", paste(formatC(data_orig$selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"))
             ) %>%
                 layout(
-                    title = '<b>Taxa Selic (%)</b>',
+                    title = '<b>Selic Rate (%)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -246,11 +246,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                     type = 'scatter', mode = 'lines',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Data:</b>", data_orig$date,
-                                  "\n<b>Risco País:</b>", paste(formatC(data_orig$risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+                    text = ~paste("<b>Date:</b>", data_orig$date,
+                                  "\n<b>Country Risk:</b>", paste(formatC(data_orig$risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
             ) %>%
                 layout(
-                    title = '<b>Risco País (Emerging Market Bond Index Brasil)</b>',
+                    title = '<b>Country Risk (Emerging Market Bond Index Brazil)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -267,11 +267,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                     type = 'scatter', mode = 'lines',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Data:</b>", data_orig$date,
-                                  "\n<b>Preço do Ouro:</b>", paste(formatC(data_orig$gold_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
+                    text = ~paste("<b>Date:</b>", data_orig$date,
+                                  "\n<b>Gold Price:</b>", paste(formatC(data_orig$gold_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
             ) %>%
                 layout(
-                    title = '<b>Preço do Ouro (USD)</b>',
+                    title = '<b>Gold Price (USD)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -289,11 +289,11 @@ mod_analises_server <- function(input, output, session, y_selected){
                     type = 'scatter', mode = 'lines',
                     line = list(color = "rgb(51, 122, 183)"),
                     hoverinfo = 'text',
-                    text = ~paste("<b>Data:</b>", data_orig$date,
-                                  "\n<b>Preço do Bitcoin:</b>", paste(formatC(data_orig$bitcoin_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
+                    text = ~paste("<b>Date:</b>", data_orig$date,
+                                  "\n<b>Bitcoin Price:</b>", paste(formatC(data_orig$bitcoin_usd, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "USD"))
             ) %>%
                 layout(
-                    title = '<b>Preço do Bitcoin (USD)</b>',
+                    title = '<b>Bitcoin Price (USD)</b>',
                     legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                     autosize = T, 
                     xaxis = list(title = '', showgrid = FALSE),
@@ -322,7 +322,7 @@ mod_analises_server <- function(input, output, session, y_selected){
             
             
             tabPanel(
-                title = "Câmbio",
+                title = "Exchange Rate",
                 #div(style = 'overflow-x: scroll',
                 plotlyOutput(ns('plot_cambio'))
                 
@@ -330,21 +330,21 @@ mod_analises_server <- function(input, output, session, y_selected){
             
 
             tabPanel(
-                title = "Selic",
+                title = "Selic Rate",
                 #div(style = 'overflow-x: scroll',
                 plotlyOutput(ns('plot_selic'))
 
             ),
 
             tabPanel(
-                title = "Risco país",
+                title = "Country Risk",
                 #div(style = 'overflow-x: scroll',
                 plotlyOutput(ns('plot_risco'))
 
             ),
 
             tabPanel(
-                title = "Ouro",
+                title = "Gold",
                 #div(style = 'overflow-x: scroll',
                 plotlyOutput(ns('plot_gold'))
 
@@ -379,8 +379,8 @@ mod_analises_server <- function(input, output, session, y_selected){
             mutate(bitcoin_usd = bitcoin_usd %>% round(digits = 2) %>% format(big.mark = ".", decimal.mark = ","))
         
         
-        colnames(data_orig) <- c('Data', 'Ibovespa', 'Câmbio (R$)', 'Taxa Selic', 'Risco País', 'VIX',
-                                 'Ouro (USD)', 'Bitcoin (USD)')
+        colnames(data_orig) <- c('Date', 'Ibovespa', 'Exchange Rate (R$)', 'Selic Rate', 'Country Risk', 'VIX',
+                     'Gold (USD)', 'Bitcoin (USD)')
         
         data_orig
     })
@@ -432,7 +432,7 @@ mod_analises_server <- function(input, output, session, y_selected){
 
             reactableOutput(ns('table_indicadores')),
             
-            footer = div(align = "right", downloadButton(ns("download_table_indicadores"), "Exportar para excel"))
+            footer = div(align = "right", downloadButton(ns("download_table_indicadores"), "Export to Excel"))
 
         )
 
@@ -505,14 +505,14 @@ mod_analises_server <- function(input, output, session, y_selected){
                 
                 hoverinfo = 'text',
                 text = ~paste("<b>Ibovespa:</b>",  paste(formatC(data_orig$media_ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""),
-                              "\n<b>Taxa Selic:</b>", paste(formatC(data_orig$media_selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
-                              "\n<b>Risco País:</b>", paste(formatC(data_orig$media_risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
+                              "\n<b>Selic Rate:</b>", paste(formatC(data_orig$media_selic, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "%"),
+                              "\n<b>Country Risk:</b>", paste(formatC(data_orig$media_risco, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""))
         ) %>%
             layout(
-                title = '<b>Ibovespa x Taxa Selic x Risco País</b>',
+                title = '<b>Ibovespa x Selic Rate x Country Risk</b>',
                 #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                 autosize = T,
-                xaxis = list(title = 'Taxa Selic (%)', showgrid = FALSE),
+                xaxis = list(title = 'Selic Rate (%)', showgrid = FALSE),
                 yaxis = list(title = 'Ibovespa')
             )
         
@@ -546,13 +546,13 @@ mod_analises_server <- function(input, output, session, y_selected){
                 hoverinfo = 'text',
                 text = ~paste("<b>Ibovespa:</b>", paste(formatC(data_orig$media_ibov, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""),
                               "\n<b>VIX:</b>", paste(formatC(data_orig$media_vix, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), ""),
-                              "\n<b>Câmbio:</b>", paste(formatC(data_orig$media_cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
+                              "\n<b>Exchange Rate:</b>", paste(formatC(data_orig$media_cambio, digits = 2, format = "f", big.mark = ".", decimal.mark = ","), "R$"))
         ) %>%
             layout(
-                title = '<b>Ibovespa x Câmbio x VIX</b>',
+                title = '<b>Ibovespa x Exchange Rate x VIX</b>',
                 #legend = list(orientation = 'h', xanchor = "center", x = 0.5, y = -0.5),
                 autosize = T,
-                xaxis = list(title = 'Câmbio (R$)', showgrid = FALSE),
+                xaxis = list(title = 'Exchange Rate (R$)', showgrid = FALSE),
                 yaxis = list(title = 'Ibovespa')
             )
         
